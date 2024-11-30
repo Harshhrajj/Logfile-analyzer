@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log File Analyzer Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <h1>Log File Analyzer</h1>
+        </header>
+        <main class="main">
+            <section class="upload-section">
+                <h2>Upload Log File</h2>
+                <form id="logForm" class="upload-form">
+                    <label for="logFile" class="file-label">
+                        <span>Choose a Log File</span>
+                        <input type="file" id="logFile" accept=".txt,.log" required>
+                    </label>
+                    <button type="button" id="analyzeBtn">Analyze</button>
+                </form>
+            </section>
+
+            <section id="results" class="results hidden">
+                <h2>Analysis Results</h2>
+                <div id="output"></div>
+                <canvas id="attackChart" width="400" height="200"></canvas>
+            </section>
+        </main>
+        <footer class="footer">
+            <p>&copy; 2024 Log Analyzer Dashboard. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
