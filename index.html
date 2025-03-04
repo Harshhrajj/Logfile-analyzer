@@ -96,9 +96,11 @@
                             <div id="output" class="event-list"></div>
                         </div>
                         
-                        <div class="recommendations">
-                            <h3><i class="fas fa-lightbulb"></i> Security Recommendations</h3>
-                            <div id="recommendationsList" class="recommendations-list"></div>
+                        <div class="recommendations-container">
+                            <h3>Security Recommendations</h3>
+                            <div id="recommendations" class="recommendations-empty">
+                                No security concerns detected yet. Upload some logs and I'll analyze them for you! 🔍
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -113,6 +115,14 @@
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">
             <i class="fas fa-moon"></i>
         </button>
+
+        <!-- Add the security mascot cat -->
+        <div class="security-mascot" aria-label="Officer Whiskers - Security Cat Mascot">
+            <img src="assets/cat.png" alt="Officer Whiskers, the security cat mascot">
+            <div class="mascot-speech-bubble">
+                Hi! I'm Officer Whiskers, your security companion. I'll help keep your logs safe! 😺
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
