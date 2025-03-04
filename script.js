@@ -20,9 +20,8 @@ const FILE_HANDLERS = {
 };
 
 /**
- * Security patterns for detecting various types of attacks
- * Each attack type contains regex patterns and a severity level
- * @type {Object.<string, {patterns: RegExp[], severity: string}>}
+ * Enhanced security patterns with context and impact information
+ * @type {Object.<string, {patterns: RegExp[], severity: string, context: string[], impact: string[], mitigations: string[]}>}
  */
 const SECURITY_PATTERNS = {
     bruteforce: {
@@ -35,7 +34,24 @@ const SECURITY_PATTERNS = {
             /brute force attempt/i,
             /password guessing/i
         ],
-        severity: 'high'
+        severity: 'high',
+        context: [
+            'Authentication system',
+            'User login endpoints',
+            'Admin interfaces'
+        ],
+        impact: [
+            'Unauthorized access',
+            'Account compromise',
+            'Service disruption'
+        ],
+        mitigations: [
+            'Implement progressive delays between login attempts',
+            'Use CAPTCHA after failed attempts',
+            'Enable multi-factor authentication',
+            'Monitor IP-based login patterns',
+            'Set up account lockout policies'
+        ]
     },
     ddos: {
         patterns: [
@@ -47,7 +63,25 @@ const SECURITY_PATTERNS = {
             /traffic spike/i,
             /bandwidth exceeded/i
         ],
-        severity: 'critical'
+        severity: 'critical',
+        context: [
+            'Network infrastructure',
+            'Web services',
+            'Application endpoints'
+        ],
+        impact: [
+            'Service unavailability',
+            'Resource exhaustion',
+            'Financial losses',
+            'Reputation damage'
+        ],
+        mitigations: [
+            'Implement rate limiting',
+            'Use CDN services',
+            'Configure traffic filtering',
+            'Deploy DDoS protection services',
+            'Set up traffic monitoring and alerting'
+        ]
     },
     malware: {
         patterns: [
@@ -60,7 +94,26 @@ const SECURITY_PATTERNS = {
             /backdoor attempt/i,
             /suspicious process/i
         ],
-        severity: 'critical'
+        severity: 'critical',
+        context: [
+            'File systems',
+            'Email attachments',
+            'Download endpoints',
+            'System processes'
+        ],
+        impact: [
+            'Data encryption/loss',
+            'System compromise',
+            'Information theft',
+            'Service disruption'
+        ],
+        mitigations: [
+            'Keep antivirus software updated',
+            'Implement application whitelisting',
+            'Regular system scanning',
+            'Email attachment filtering',
+            'User security awareness training'
+        ]
     },
     injection: {
         patterns: [
@@ -72,7 +125,26 @@ const SECURITY_PATTERNS = {
             /shell command execution/i,
             /remote code execution/i
         ],
-        severity: 'critical'
+        severity: 'critical',
+        context: [
+            'Web applications',
+            'Database queries',
+            'User input handling',
+            'Command execution'
+        ],
+        impact: [
+            'Data breach',
+            'Unauthorized data access',
+            'System compromise',
+            'Code execution'
+        ],
+        mitigations: [
+            'Use parameterized queries',
+            'Implement input validation',
+            'Apply output encoding',
+            'Regular security testing',
+            'Web application firewall'
+        ]
     },
     privEsc: {
         patterns: [
@@ -84,7 +156,26 @@ const SECURITY_PATTERNS = {
             /admin rights violation/i,
             /elevation of privilege/i
         ],
-        severity: 'high'
+        severity: 'high',
+        context: [
+            'System permissions',
+            'User privileges',
+            'Administrative access',
+            'Service accounts'
+        ],
+        impact: [
+            'Unauthorized admin access',
+            'System compromise',
+            'Data breach',
+            'Security bypass'
+        ],
+        mitigations: [
+            'Implement principle of least privilege',
+            'Regular permission audits',
+            'Monitor privileged accounts',
+            'Use role-based access control',
+            'Security patch management'
+        ]
     },
     dataLeak: {
         patterns: [
@@ -94,7 +185,26 @@ const SECURITY_PATTERNS = {
             /unauthorized data access/i,
             /data exfiltration/i
         ],
-        severity: 'critical'
+        severity: 'critical',
+        context: [
+            'Data storage',
+            'Data transmission',
+            'User information',
+            'Sensitive records'
+        ],
+        impact: [
+            'Privacy violation',
+            'Financial loss',
+            'Legal consequences',
+            'Reputation damage'
+        ],
+        mitigations: [
+            'Implement data encryption',
+            'Access control policies',
+            'Data classification',
+            'Regular security audits',
+            'Data loss prevention tools'
+        ]
     },
     reconnaissance: {
         patterns: [
@@ -104,7 +214,24 @@ const SECURITY_PATTERNS = {
             /probe attempt/i,
             /enumeration attempt/i
         ],
-        severity: 'medium'
+        severity: 'medium',
+        context: [
+            'Network perimeter',
+            'Service discovery',
+            'System enumeration'
+        ],
+        impact: [
+            'Information disclosure',
+            'Attack preparation',
+            'Vulnerability mapping'
+        ],
+        mitigations: [
+            'Configure firewall rules',
+            'Implement IDS/IPS',
+            'Regular vulnerability scanning',
+            'Network segmentation',
+            'Security monitoring'
+        ]
     }
 };
 
@@ -576,30 +703,147 @@ function getRecommendation(attackType) {
 }
 
 /**
- * Updates the UI with analysis results
+ * Analyzes security patterns and generates AI-driven recommendations
  * @param {Object} analysis - The analysis results
+ * @returns {Object} - Enhanced analysis with AI recommendations
+ */
+function generateAIRecommendations(analysis) {
+    const attackPatterns = {};
+    const recommendations = new Set();
+    const criticalIssues = [];
+    const timeBasedPatterns = new Map();
+
+    // Analyze attack patterns and frequency
+    analysis.events.forEach(event => {
+        const attackType = event.attackType;
+        attackPatterns[attackType] = (attackPatterns[attackType] || 0) + 1;
+
+        // Track time-based patterns
+        const eventTime = event.timestamp || 'Unknown';
+        if (!timeBasedPatterns.has(attackType)) {
+            timeBasedPatterns.set(attackType, new Map());
+        }
+        const typePatterns = timeBasedPatterns.get(attackType);
+        typePatterns.set(eventTime, (typePatterns.get(eventTime) || 0) + 1);
+
+        // Track critical issues
+        if (event.severity === 'critical') {
+            criticalIssues.push({
+                type: attackType,
+                timestamp: eventTime,
+                context: SECURITY_PATTERNS[attackType].context
+            });
+        }
+    });
+
+    // Generate context-aware recommendations
+    Object.entries(attackPatterns).forEach(([attackType, frequency]) => {
+        const pattern = SECURITY_PATTERNS[attackType];
+        const timePattern = timeBasedPatterns.get(attackType);
+        
+        // Analyze attack frequency and patterns
+        const isHighFrequency = frequency > 5;
+        const isRecent = Array.from(timePattern.keys()).some(time => 
+            new Date(time) > new Date(Date.now() - 24 * 60 * 60 * 1000));
+        
+        // Generate prioritized recommendations
+        const priority = pattern.severity === 'critical' ? 'Immediate' :
+                        isHighFrequency ? 'High' :
+                        isRecent ? 'Medium' : 'Low';
+
+        // Add context-aware recommendations
+        recommendations.add({
+            type: attackType,
+            priority: priority,
+            frequency: frequency,
+            context: pattern.context,
+            impact: pattern.impact,
+            mitigations: pattern.mitigations,
+            description: generateSecurityAdvice(attackType, frequency, isRecent)
+        });
+    });
+
+    return {
+        ...analysis,
+        aiRecommendations: Array.from(recommendations),
+        riskAssessment: {
+            criticalIssues: criticalIssues.length,
+            uniqueAttackTypes: Object.keys(attackPatterns).length,
+            highFrequencyAttacks: Object.entries(attackPatterns)
+                .filter(([_, freq]) => freq > 5)
+                .map(([type]) => type)
+        }
+    };
+}
+
+/**
+ * Generates detailed security advice based on attack patterns
+ * @param {string} attackType - The type of attack
+ * @param {number} frequency - Attack frequency
+ * @param {boolean} isRecent - Whether the attack is recent
+ * @returns {string} - Detailed security advice
+ */
+function generateSecurityAdvice(attackType, frequency, isRecent) {
+    const pattern = SECURITY_PATTERNS[attackType];
+    const urgency = isRecent ? "immediate" : "planned";
+    const impact = frequency > 5 ? "significant" : "moderate";
+
+    return `${pattern.severity.toUpperCase()} PRIORITY: ${attackType} attacks detected with ${impact} impact. ` +
+           `Requires ${urgency} attention. This affects ${pattern.context.join(", ")}. ` +
+           `Potential impacts include ${pattern.impact.join(", ")}. ` +
+           `Recommended actions:\n` +
+           pattern.mitigations.map((m, i) => `${i + 1}. ${m}`).join("\n");
+}
+
+/**
+ * Updates the UI with enhanced security analysis
+ * @param {Object} analysis - The analysis results with AI recommendations
  */
 function updateUI(analysis) {
     const results = document.getElementById('results');
     const output = document.getElementById('output');
     const recommendationsList = document.getElementById('recommendationsList');
     
-    results.classList.remove('hidden');
+        results.classList.remove('hidden');
     
-    // Update event list
-    output.innerHTML = analysis.events.map(event => `
+    // Add AI-driven analysis
+    const enhancedAnalysis = generateAIRecommendations(analysis);
+    
+    // Update event list with enhanced context
+    output.innerHTML = enhancedAnalysis.events.map(event => `
         <p class="event-item ${event.severity}">
             <strong>Line ${event.lineNumber}</strong> - 
             <span class="attack-type">${event.attackType.toUpperCase()}</span>
-            <span class="severity-badge ${event.severity}">${event.severity}</span><br>
+            <span class="severity-badge ${event.severity}">${event.severity}</span>
+            <span class="timestamp">${event.timestamp || 'Unknown'}</span><br>
             <code>${event.line}</code>
         </p>
     `).join('');
 
-    // Update recommendations
-    recommendationsList.innerHTML = Array.from(analysis.recommendations)
-        .map(rec => `<div class="recommendation-item"><i class="fas fa-shield-alt"></i> ${rec}</div>`)
-        .join('');
+    // Update recommendations with AI-driven insights
+    recommendationsList.innerHTML = enhancedAnalysis.aiRecommendations
+        .sort((a, b) => getPriorityWeight(b.priority) - getPriorityWeight(a.priority))
+        .map(rec => `
+            <div class="recommendation-item ${rec.priority.toLowerCase()}">
+                <div class="rec-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <span class="priority-badge">${rec.priority}</span>
+                    <strong>${rec.type.toUpperCase()}</strong>
+                    <span class="frequency-badge">Frequency: ${rec.frequency}</span>
+                </div>
+                <div class="rec-content">
+                    <p>${rec.description}</p>
+                    <div class="impact-section">
+                        <strong>Potential Impact:</strong>
+                        <ul>${rec.impact.map(i => `<li>${i}</li>`).join('')}</ul>
+                    </div>
+                    <div class="mitigation-section">
+                        <strong>Recommended Actions:</strong>
+                        <ul>${rec.mitigations.map(m => `<li>${m}</li>`).join('')}</ul>
+                    </div>
+                </div>
+            </div>
+        `).join('');
 
     // Update statistics display
     document.getElementById('totalEvents').textContent = stats.totalEvents;
@@ -608,6 +852,21 @@ function updateUI(analysis) {
 
     // Update charts
     updateCharts();
+}
+
+/**
+ * Gets the weight of a priority level for sorting
+ * @param {string} priority - The priority level
+ * @returns {number} - Priority weight
+ */
+function getPriorityWeight(priority) {
+    const weights = {
+        'Immediate': 4,
+        'High': 3,
+        'Medium': 2,
+        'Low': 1
+    };
+    return weights[priority] || 0;
 }
 
 /**
@@ -694,28 +953,28 @@ function updateCharts() {
 
     // Attack types chart
     attackChart = new Chart(attackCtx, {
-        type: 'bar',
-        data: {
+            type: 'bar',
+            data: {
             labels: Object.keys(stats.attackTypes).map(type => type.toUpperCase()),
-            datasets: [{
+                datasets: [{
                 label: 'Attack Types',
                 data: Object.values(stats.attackTypes),
                 backgroundColor: chartColors.attackTypes
-            }]
-        },
-        options: {
+                }]
+            },
+            options: {
             ...chartOptions,
-            responsive: true,
-            plugins: {
+                responsive: true,
+                plugins: {
                 ...chartOptions.plugins,
                 title: {
                     display: true,
                     text: 'Attack Types Distribution',
                     color: chartOptions.plugins.title.color
                 }
+                }
             }
-        }
-    });
+        });
 
     // Severity levels chart
     severityChart = new Chart(severityCtx, {
@@ -846,4 +1105,89 @@ function filterResults(filterType, value) {
             event.style.display = matchesFilter ? 'block' : 'none';
         }
     });
+}
+
+// Add mascot interaction functions
+function updateMascotMessage(message) {
+    const speechBubble = document.querySelector('.mascot-speech-bubble');
+    if (speechBubble) {
+        speechBubble.textContent = message;
+    }
+}
+
+function updateRecommendations(recommendations) {
+    const recommendationsDiv = document.getElementById('recommendations');
+    
+    if (!recommendations || recommendations.length === 0) {
+        recommendationsDiv.className = 'recommendations-empty';
+        recommendationsDiv.innerHTML = 'No security concerns detected yet. Upload some logs and I\'ll analyze them for you! 🔍';
+        updateMascotMessage('Officer Whiskers here! Everything looks good! Keep those logs coming! 😺');
+        return;
+    }
+
+    recommendationsDiv.className = 'recommendations-list';
+    recommendationsDiv.innerHTML = '';
+
+    recommendations.forEach(rec => {
+        const recElement = document.createElement('div');
+        recElement.className = `recommendation-item ${rec.priority.toLowerCase()}`;
+        recElement.innerHTML = `
+            <div class="rec-header">
+                <span class="rec-priority">${rec.priority}</span>
+                <span class="rec-type">${rec.type}</span>
+            </div>
+            <div class="rec-content">
+                <div class="impact-section">
+                    <strong>Impact:</strong> ${rec.impact}
+                </div>
+                <div class="mitigation-section">
+                    <strong>Mitigation:</strong> ${rec.mitigation}
+                </div>
+            </div>
+        `;
+        recommendationsDiv.appendChild(recElement);
+    });
+
+    // Update mascot message based on highest priority recommendation
+    const highestPriority = recommendations.reduce((max, rec) => {
+        const priorities = { 'Critical': 4, 'High': 3, 'Medium': 2, 'Low': 1 };
+        return Math.max(max, priorities[rec.priority] || 0);
+    }, 0);
+
+    const mascotMessages = {
+        4: 'Officer Whiskers here! Critical security issues detected! Let\'s address these right away! 🚨',
+        3: 'Officer Whiskers reporting! Found some important security concerns. Time to take action! 🛡️',
+        2: 'Officer Whiskers here! Some security improvements recommended. Better safe than sorry! 😺',
+        1: 'Officer Whiskers reporting! Minor security suggestions available. Keep up the good work! 👍',
+        0: 'Officer Whiskers here! Everything looks good! Keep those logs coming! 😺'
+    };
+
+    updateMascotMessage(mascotMessages[highestPriority]);
+}
+
+// Update the analyzeSecurityEvents function to handle empty results
+async function analyzeSecurityEvents(events) {
+    try {
+        const openAIClient = new OpenAIClient(process.env.OPENAI_API_KEY);
+        const result = await openAIClient.analyzeSecurityEvents(events);
+        
+        if (!result || !result.recommendations || result.recommendations.length === 0) {
+            updateRecommendations([]);
+            return;
+        }
+
+        updateRecommendations(result.recommendations);
+    } catch (error) {
+        console.error('Error analyzing security events:', error);
+        updateMascotMessage('Officer Whiskers here! Oops! Had some trouble analyzing those logs. Try again? 😿');
+        updateRecommendations([]);
+    }
+}
+
+// Add mascot animation on file upload
+function handleFiles(files) {
+    if (files.length > 0) {
+        updateMascotMessage('Officer Whiskers here! Analyzing your logs with my keen feline instincts! 🔍');
+    }
+    // ... rest of the existing handleFiles function
 }

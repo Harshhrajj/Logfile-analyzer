@@ -427,17 +427,144 @@ select {
 /* Recommendations */
 .recommendation-item {
     background: rgba(255, 255, 255, 0.1);
-    padding: 1rem;
-    margin-bottom: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
     border-radius: var(--border-radius);
+    border-left: 4px solid var(--secondary-color);
+    transition: all 0.3s ease;
+}
+
+.recommendation-item.immediate {
+    border-left-color: #ff5252;
+    background: rgba(255, 82, 82, 0.1);
+}
+
+.recommendation-item.high {
+    border-left-color: #ffab00;
+    background: rgba(255, 171, 0, 0.1);
+}
+
+.recommendation-item.medium {
+    border-left-color: #5c6bc0;
+    background: rgba(92, 107, 192, 0.1);
+}
+
+.recommendation-item.low {
+    border-left-color: #4caf50;
+    background: rgba(76, 175, 80, 0.1);
+}
+
+.rec-header {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.priority-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.immediate .priority-badge {
+    background: #ff5252;
+    color: white;
+}
+
+.high .priority-badge {
+    background: #ffab00;
+    color: var(--light-text);
+}
+
+.medium .priority-badge {
+    background: #5c6bc0;
+    color: white;
+}
+
+.low .priority-badge {
+    background: #4caf50;
+    color: white;
+}
+
+.frequency-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.rec-content {
+    margin-left: 2rem;
+}
+
+.impact-section,
+.mitigation-section {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius);
+}
+
+.impact-section ul,
+.mitigation-section ul {
+    margin: 0.5rem 0 0 1.5rem;
+    padding: 0;
+}
+
+.impact-section li,
+.mitigation-section li {
+    margin-bottom: 0.5rem;
+}
+
+.timestamp {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-left: 1rem;
+}
+
+/* Risk Assessment Section */
+.risk-assessment {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.risk-assessment h3 {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
 }
 
-.recommendation-item i {
-    color: var(--success-color);
-    margin-top: 0.2rem;
+.risk-metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.risk-metric {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.risk-metric .value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+    color: var(--accent-color);
+}
+
+.risk-metric .label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
 }
 
 /* Drop Zone Highlight */
@@ -541,6 +668,22 @@ select {
         width: 40px;
         height: 40px;
     }
+
+    .rec-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .rec-content {
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+
+    .impact-section,
+    .mitigation-section {
+        padding: 0.75rem;
+    }
 }
 
 /* Animation */
@@ -556,4 +699,54 @@ select {
 /* Smooth scroll behavior */
 html {
     scroll-behavior: smooth;
+}
+
+.security-mascot {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.security-mascot:hover {
+    transform: scale(1.1);
+}
+
+.security-mascot img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.mascot-speech-bubble {
+    position: absolute;
+    background: var(--primary-color);
+    border-radius: 15px;
+    padding: 15px;
+    max-width: 200px;
+    color: var(--text-color);
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    bottom: 130px;
+    right: 20px;
+}
+
+.mascot-speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    right: 20px;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--primary-color);
+}
+
+.security-mascot:hover .mascot-speech-bubble {
+    opacity: 1;
+    transform: translateY(0);
 }

@@ -1,13 +1,17 @@
-# Log File Analyzer
+# Log File Analyzer with AI-Powered Security Analysis
 
-The Log File Analyzer is a web-based tool for detecting and analyzing cybersecurity threats like DDoS attacks and Brute Force attempts from server logs. Users can upload log files through an intuitive dashboard, and the system highlights suspicious activities, providing detailed results and visualizations. Built with HTML, CSS, and JavaScript.
+A sophisticated web-based security log analyzer that leverages OpenAI's GPT models to provide intelligent security analysis and actionable recommendations. The application analyzes various log formats for security threats, utilizing both pattern matching and AI-driven contextual analysis.
 
 ## Features
 
 ### Core Functionality
-- **Multi-format Log Analysis**: Supports various log formats including `.log`, `.txt`, `.csv`, `.json`, `.evtx`, `.syslog`, and `.bin` files
-- **Automatic Format Detection**: Identifies and parses log formats based on file extension
-- **Comprehensive Security Analysis**: Detects multiple attack types including:
+- **Multi-format Log Analysis**: Supports `.log`, `.txt`, `.csv`, `.json`, `.evtx`, `.syslog`, and `.bin` files
+- **AI-Powered Analysis**: Uses OpenAI's GPT models for:
+  - Contextual threat analysis
+  - Advanced pattern recognition
+  - Natural language security recommendations
+  - Risk assessment and prioritization
+- **Comprehensive Security Detection**: Identifies multiple attack types including:
   - Brute Force Attempts
   - DDoS Attacks
   - Malware Detection
@@ -19,173 +23,140 @@ The Log File Analyzer is a web-based tool for detecting and analyzing cybersecur
 ### User Interface
 - **Dual Theme Support**: Toggle between dark (midnight blue) and light themes
 - **Responsive Design**: Works on desktop and mobile devices
-- **Drag-and-Drop Upload**: Easy file upload with drag-and-drop functionality
+- **Interactive Dashboard**: Real-time analysis updates and visualizations
 - **Multiple File Processing**: Analyze multiple log files in a single session
-- **Loading Animations**: Visual feedback during analysis process
-- **Auto-scrolling**: Automatically scrolls to results after analysis
 
-### Visualization
-- **Interactive Charts**: Visual representation of analysis results using Chart.js
+### Visualization & Analysis
+- **Interactive Charts**: Visual representation using Chart.js
   - Attack Type Distribution
   - Severity Level Distribution
   - Event Timeline
   - Source Distribution
-- **Filtering Options**: Filter results by severity level or attack type
-- **Security Recommendations**: Contextual security recommendations based on detected threats
+- **AI-Enhanced Recommendations**: Context-aware security advice
+- **Risk Assessment**: AI-driven threat evaluation and prioritization
+
+## Setup
+
+### Prerequisites
+- Modern web browser
+- Node.js (for local development)
+- OpenAI API key
+
+### Installation
+
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/log-file-analyzer.git
+   cd log-file-analyzer
+   ```
+
+2. **Environment Setup**
+   ```bash
+   # Copy the example environment file
+   cp .env.example .env
+   
+   # Edit .env with your OpenAI API key and preferences
+   nano .env
+   ```
+
+3. **Configure OpenAI API**
+   - Get your API key from [OpenAI's platform](https://platform.openai.com)
+   - Add it to the `.env` file:
+     ```
+     OPENAI_API_KEY=your_api_key_here
+     ```
+
+4. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+5. **Start the Application**
+   ```bash
+   npm start
+   ```
+
+### Environment Configuration
+
+Key environment variables in `.env`:
+```env
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4  # or gpt-3.5-turbo
+
+# Security Analysis Configuration
+MAX_TOKENS=1000
+TEMPERATURE=0.7
+LOG_BATCH_SIZE=50
+
+# Application Configuration
+DEBUG_MODE=false
+ENABLE_DETAILED_LOGGING=true
+```
 
 ## Usage Guide
 
-### Getting Started
-1. **Access the Application**: Open `index.html` in a modern web browser
-2. **Choose Theme**: Use the theme toggle button (bottom right) to switch between dark and light themes
+### Basic Usage
+1. Open the application in your web browser
+2. Upload log files using drag-and-drop or file selection
+3. Click "Analyze Logs" to start the analysis
+4. Review AI-enhanced security recommendations and visualizations
 
-### Analyzing Log Files
-1. **Upload Files**:
-   - Drag and drop log files onto the designated area, or
-   - Click "Choose Files" to select files from your device
-   - Supported formats: `.log`, `.txt`, `.csv`, `.json`, `.evtx`, `.syslog`, and `.bin`
+### Advanced Features
+1. **AI Analysis Settings**
+   - Adjust analysis depth in `.env`
+   - Configure token usage and rate limiting
+   - Enable detailed logging for debugging
 
-2. **Start Analysis**:
-   - Click the "Analyze Logs" button
-   - A loading animation will appear during processing
+2. **Filtering and Exploration**
+   - Filter results by severity or attack type
+   - Sort recommendations by priority
+   - Export analysis reports
 
-3. **View Results**:
-   - The page will automatically scroll to the results section
-   - Review the summary statistics at the top of the page
-   - Explore the visual charts for attack distribution and severity
+3. **Theme Customization**
+   - Toggle between light and dark themes
+   - Customize theme colors in `styles.css`
 
-4. **Filter and Explore**:
-   - Use the dropdown filters to focus on specific severity levels or attack types
-   - Review detailed security events in the list below the charts
-   - Check the recommendations section for security advice
+## API Rate Limiting
 
-### Understanding the Results
-- **Statistics Header**:
-  - Total Events: All log entries analyzed
-  - Critical Events: High-priority security concerns
-  - Warnings: Medium-priority security concerns
+The application includes built-in rate limiting for OpenAI API calls:
+- Default: 60 requests per minute
+- Configurable through `.env` settings
+- Batch processing for large log files
 
-- **Charts**:
-  - Attack Types: Distribution of different attack categories
-  - Severity Levels: Proportion of critical, high, medium, and low severity events
-  - Timeline: Chronological distribution of events
-  - Sources: Origin points of detected attacks
+## Security Considerations
 
-- **Security Events List**:
-  - Each event shows the line number, attack type, and severity
-  - Color-coded for quick severity assessment
-  - Includes the raw log line for reference
+1. **API Key Security**
+   - Never commit your `.env` file
+   - Use environment variables in production
+   - Rotate API keys periodically
 
-- **Recommendations**:
-  - Actionable security advice based on detected threats
-  - Prioritized by severity and attack type
+2. **Data Privacy**
+   - Log data is processed locally
+   - Only relevant excerpts are sent to OpenAI
+   - No sensitive data is stored permanently
 
-## Technical Documentation
+## Troubleshooting
 
-### Architecture
-The application follows a simple front-end architecture with three main components:
-- **HTML (index.html)**: Structure and content
-- **CSS (styles.css)**: Styling and theming
-- **JavaScript (script.js)**: Logic and functionality
+Common issues and solutions:
+1. **API Rate Limits**: Adjust `MAX_REQUESTS_PER_MINUTE` in `.env`
+2. **Memory Issues**: Modify `LOG_BATCH_SIZE` for large files
+3. **Analysis Timeout**: Check network connection and API status
 
-### Key Components
+## Contributing
 
-#### Log Parsing System
-- Format-specific parsers for different log types
-- Automatic format detection based on file extension
-- Fallback to text parsing for unknown formats
-
-```javascript
-const FILE_HANDLERS = {
-    'csv': parseCsvLog,
-    'json': parseJsonLog,
-    'evtx': parseEvtxLog,
-    'syslog': parseSyslog,
-    'bin': parseBinaryLog,
-    'txt': parseTextLog,
-    'log': parseTextLog
-};
-```
-
-#### Security Pattern Detection
-- Regular expression patterns for various attack types
-- Severity classification for each attack category
-- Extensible pattern system for adding new threat types
-
-```javascript
-const SECURITY_PATTERNS = {
-    bruteforce: {
-        patterns: [
-            /failed login attempt/i,
-            /authentication failure/i,
-            // Additional patterns...
-        ],
-        severity: 'high'
-    },
-    // Additional attack types...
-};
-```
-
-#### Theming System
-- CSS variables for theme colors and properties
-- Theme persistence using localStorage
-- Dynamic chart updates when theme changes
-
-```javascript
-// Theme toggle functionality
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('light-theme');
-    // Additional theme handling...
-});
-```
-
-#### Visualization Engine
-- Chart.js for data visualization
-- Theme-aware chart rendering
-- Responsive chart layouts
-
-```javascript
-function updateCharts() {
-    // Chart initialization and updates...
-}
-```
-
-### Data Flow
-1. User uploads log file(s)
-2. File content is read and parsed based on format
-3. Log entries are analyzed against security patterns
-4. Results are aggregated and statistics are calculated
-5. UI is updated with results and visualizations
-6. Charts are rendered with appropriate theming
-
-## Extending the Application
-
-### Adding New Log Formats
-To add support for a new log format:
-1. Create a parser function in `script.js`
-2. Add the format to the `FILE_HANDLERS` object
-3. Ensure proper timestamp extraction
-
-### Adding New Attack Patterns
-To add detection for new attack types:
-1. Add a new entry to the `SECURITY_PATTERNS` object
-2. Define regex patterns and severity level
-3. Add corresponding recommendation in the `getRecommendation` function
-
-### Customizing Themes
-To modify the theme colors:
-1. Update the CSS variables in the `:root` section of `styles.css`
-2. Adjust both dark and light theme variables as needed
-
-## Browser Compatibility
-- Chrome (latest)
-- Firefox (latest)
-- Edge (latest)
-- Safari (latest)
-
-## Dependencies
-- [Chart.js](https://www.chartjs.org/) - For data visualization
-- [Font Awesome](https://fontawesome.com/) - For icons
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
-This project is available for personal and commercial use.
+
+This project is available under the MIT License. See LICENSE file for details.
+
+## Acknowledgments
+
+- OpenAI for providing the GPT API
+- Chart.js for visualization capabilities
+- Contributors and community members
