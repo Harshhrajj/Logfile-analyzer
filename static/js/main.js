@@ -1,3 +1,24 @@
+// Theme handling
+const themeToggle = document.getElementById('themeToggle');
+const body = document.body;
+const icon = themeToggle.querySelector('i');
+
+// Load saved theme
+const savedTheme = localStorage.getItem('theme') || 'light';
+body.classList.toggle('dark-theme', savedTheme === 'dark');
+updateThemeIcon();
+
+themeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-theme');
+    updateThemeIcon();
+    localStorage.setItem('theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
+});
+
+function updateThemeIcon() {
+    const isDark = body.classList.contains('dark-theme');
+    icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+}
+
 // Chart instances
 let attackChart = null;
 let ipChart = null;
@@ -33,6 +54,7 @@ function unhighlight(e) {
 
 // Handle file selection
 dropZone.addEventListener('drop', handleDrop, false);
+dropZone.addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', handleFiles, false);
 
 function handleDrop(e) {
@@ -66,6 +88,7 @@ async function uploadFile(file) {
         
         if (data.success) {
             displayResults(data.results);
+            updateOfficerWhiskers(data.results.stats.total_attacks);
         } else {
             alert(data.error || 'Error analyzing file');
         }
@@ -75,6 +98,23 @@ async function uploadFile(file) {
     } finally {
         document.getElementById('loadingSpinner').classList.add('d-none');
     }
+}
+
+// Update Officer Whiskers
+function updateOfficerWhiskers(issueCount) {
+    const speechBubble = document.querySelector('.speech-bubble');
+    const issueCountElement = document.getElementById('issueCount');
+    
+    issueCountElement.textContent = issueCount;
+    speechBubble.classList.remove('d-none');
+    
+    // Add animation class
+    speechBubble.classList.add('animate__animated', 'animate__bounceIn');
+    
+    // Remove animation class after animation ends
+    setTimeout(() => {
+        speechBubble.classList.remove('animate__animated', 'animate__bounceIn');
+    }, 1000);
 }
 
 // Display analysis results
@@ -133,7 +173,26 @@ function updateCharts(results) {
                 },
                 title: {
                     display: true,
-                    text: 'Attack Type Distribution'
+                    text: 'Attack Type Distribution',
+                    color: getComputedStyle(document.body).getPropertyValue('--text-primary')
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-primary')
+                    },
+                    grid: {
+                        color: getComputedStyle(document.body).getPropertyValue('--border-color')
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-primary')
+                    },
+                    grid: {
+                        color: getComputedStyle(document.body).getPropertyValue('--border-color')
+                    }
                 }
             }
         }
@@ -168,11 +227,15 @@ function updateCharts(results) {
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'right'
+                    position: 'right',
+                    labels: {
+                        color: getComputedStyle(document.body).getPropertyValue('--text-primary')
+                    }
                 },
                 title: {
                     display: true,
-                    text: 'Top 10 IP Addresses by Activity'
+                    text: 'Top 10 IP Addresses by Activity',
+                    color: getComputedStyle(document.body).getPropertyValue('--text-primary')
                 }
             }
         }

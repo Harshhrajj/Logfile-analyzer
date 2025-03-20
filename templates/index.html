@@ -8,129 +8,120 @@
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
-<body class="bg-light">
-    <nav class="navbar navbar-dark bg-dark">
+<body class="light-theme">
+    <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-shield-alt"></i> Security Log Analyzer
-            </a>
+            <a class="navbar-brand" href="#">Security Log Analyzer</a>
+            <button id="themeToggle" class="btn btn-outline-primary" title="Toggle dark/light theme">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
     </nav>
 
-    <div class="container my-5">
-        <!-- Upload Section -->
-        <div class="card mb-4 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title">Upload Log File</h5>
-                <div class="upload-area" id="dropZone">
-                    <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
-                    <p>Drag and drop your log file here or</p>
-                    <form id="uploadForm">
-                        <input type="file" id="fileInput" accept=".log,.txt" class="d-none">
-                        <button type="button" class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
-                            Choose File
-                        </button>
-                    </form>
-                    <p class="mt-2 text-muted small">Supported formats: .log, .txt (Max size: 16MB)</p>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="upload-section card">
+                    <div class="card-body">
+                        <div id="dropZone" class="drop-zone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag and drop log files here or click to select</p>
+                            <input type="file" id="fileInput" class="file-input" accept=".log,.txt" hidden>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="officer-whiskers">
+                    <img src="{{ url_for('static', filename='images/officer_whiskers.png') }}" alt="Officer Whiskers">
+                    <div class="speech-bubble d-none">
+                        <p>Meow! I found <span id="issueCount">0</span> security issues!</p>
+                        <p class="small-text">Let me analyze your logs...</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Loading Spinner -->
-        <div id="loadingSpinner" class="text-center d-none">
+        <div id="loadingSpinner" class="loading-overlay d-none">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <p class="mt-2">Analyzing log file...</p>
         </div>
 
-        <!-- Results Section -->
-        <div id="resultsSection" class="d-none">
+        <div id="resultsSection" class="mt-4 d-none">
             <div class="row">
-                <!-- Statistics Cards -->
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">Total Attacks</h6>
-                            <h2 id="totalAttacks" class="card-title mb-0">0</h2>
-                        </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3>Total Attacks</h3>
+                        <p id="totalAttacks">0</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">SQL Injection</h6>
-                            <h2 id="sqlInjectionCount" class="card-title mb-0">0</h2>
-                        </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3>SQL Injection</h3>
+                        <p id="sqlInjectionCount">0</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">XSS Attacks</h6>
-                            <h2 id="xssCount" class="card-title mb-0">0</h2>
-                        </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3>XSS Attacks</h3>
+                        <p id="xssCount">0</p>
                     </div>
                 </div>
-                <div class="col-md-6 col-lg-3 mb-4">
-                    <div class="card shadow-sm">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3>Unique IPs</h3>
+                        <p id="uniqueIPs">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <canvas id="attackChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <canvas id="ipChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Detailed Analysis</h3>
+                        </div>
                         <div class="card-body">
-                            <h6 class="card-subtitle mb-2 text-muted">Unique IPs</h6>
-                            <h2 id="uniqueIPs" class="card-title mb-0">0</h2>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Attack Type</th>
+                                            <th>Line</th>
+                                            <th>IP Address</th>
+                                            <th>Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="detailedResults"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Charts Row -->
-            <div class="row mb-4">
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">Attack Distribution</h5>
-                            <canvas id="attackChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">IP Frequency</h5>
-                            <canvas id="ipChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Detailed Results -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Detailed Analysis</h5>
-                    <div class="mb-3">
-                        <div class="btn-group">
-                            <button class="btn btn-outline-primary" onclick="downloadResults('json')">
-                                <i class="fas fa-download"></i> Download JSON
-                            </button>
-                            <button class="btn btn-outline-primary" onclick="downloadResults('csv')">
-                                <i class="fas fa-file-csv"></i> Download CSV
-                            </button>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Attack Type</th>
-                                    <th>Line</th>
-                                    <th>IP</th>
-                                    <th>Details</th>
-                                </tr>
-                            </thead>
-                            <tbody id="detailedResults"></tbody>
-                        </table>
-                    </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <button onclick="downloadResults('json')" class="btn btn-primary me-2">
+                        <i class="fas fa-download"></i> Download JSON
+                    </button>
                 </div>
             </div>
         </div>
