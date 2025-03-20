@@ -316,8 +316,57 @@ function handleDrop(e) {
 
 // Handle file selection
 document.getElementById('logFile').addEventListener('change', function(e) {
-    handleFiles(this.files);
+    if (this.files.length > 0) {
+        previewFiles(this.files);
+    }
 });
+
+/**
+ * Previews the selected files before analysis
+ * @param {FileList} files - The list of files to preview
+ */
+function previewFiles(files) {
+    const previewContainer = document.createElement('div');
+    previewContainer.className = 'file-preview';
+    previewContainer.innerHTML = '<h3>Selected Files:</h3>';
+    
+    const fileList = document.createElement('ul');
+    fileList.className = 'file-list';
+    
+    Array.from(files).forEach(file => {
+        const li = document.createElement('li');
+        li.textContent = `${file.name} (${formatFileSize(file.size)})`;
+        fileList.appendChild(li);
+    });
+    
+    previewContainer.appendChild(fileList);
+    
+    // Add preview to the upload section
+    const uploadSection = document.querySelector('.upload-section');
+    const existingPreview = uploadSection.querySelector('.file-preview');
+    if (existingPreview) {
+        existingPreview.remove();
+    }
+    uploadSection.appendChild(previewContainer);
+    
+    // Show analyze button
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    analyzeBtn.style.display = 'block';
+    analyzeBtn.disabled = false;
+}
+
+/**
+ * Formats file size in bytes to human readable format
+ * @param {number} bytes - File size in bytes
+ * @returns {string} - Formatted file size
+ */
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
 
 /**
  * Theme management
@@ -360,14 +409,20 @@ const loadingOverlay = document.querySelector('.loading-overlay');
  * Shows the loading overlay
  */
 function showLoading() {
-    loadingOverlay.classList.add('active');
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    if (loadingOverlay) {
+        loadingOverlay.classList.add('active');
+    }
 }
 
 /**
  * Hides the loading overlay
  */
 function hideLoading() {
-    loadingOverlay.classList.remove('active');
+    const loadingOverlay = document.querySelector('.loading-overlay');
+    if (loadingOverlay) {
+        loadingOverlay.classList.remove('active');
+    }
 }
 
 /**
@@ -375,7 +430,9 @@ function hideLoading() {
  */
 function scrollToResults() {
     const resultsSection = document.getElementById('results');
-    resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (resultsSection) {
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 /**
@@ -385,7 +442,7 @@ function scrollToResults() {
 function analyzeFile(file) {
     showLoading();
     const reader = new FileReader();
-    
+
     reader.onload = function(e) {
         const content = e.target.result;
         const fileExt = file.name.split('.').pop().toLowerCase();
@@ -424,177 +481,60 @@ function analyzeFile(file) {
 /**
  * Handles multiple files sequentially
  * @param {FileList} files - The list of files to process
- * @returns {Promise<void>}
  */
 async function handleFiles(files) {
-    showLoading();
-    
-    // Process files sequentially
-    for (const file of Array.from(files)) {
-        await new Promise(resolve => {
-            const reader = new FileReader();
-            
-            reader.onload = async function(e) {
-                const content = e.target.result;
-                const fileExt = file.name.split('.').pop().toLowerCase();
-                const parser = FILE_HANDLERS[fileExt] || parseTextLog;
-                
-                try {
-                    const logEntries = parser(content);
-                    const analysis = analyzeLogs(logEntries);
-                    updateUI(analysis);
-                } catch (error) {
-                    console.error(`Error processing ${file.name}:`, error);
-                }
-                resolve();
-            };
-            
-            reader.onerror = () => {
-                console.error(`Error reading ${file.name}`);
-                resolve();
-            };
-            
-            if (file.name.endsWith('.bin')) {
-                reader.readAsArrayBuffer(file);
-            } else {
-                reader.readAsText(file);
-            }
-        });
-    }
-    
-    hideLoading();
-    setTimeout(scrollToResults, 100);
-}
-
-// Main analysis function
-document.getElementById('analyzeBtn').addEventListener('click', () => {
-    const fileInput = document.getElementById('logFile');
-    if (!fileInput.files.length) {
-        alert("Please upload a log file to analyze.");
+    if (!files || files.length === 0) {
+        alert("Please select files to analyze.");
         return;
     }
-    Array.from(fileInput.files).forEach(analyzeFile);
-});
 
-/**
- * Parses CSV format logs
- * @param {string} content - The raw log content
- * @returns {Array<Object>} - Array of parsed log entries
- */
-function parseCsvLog(content) {
-    const lines = content.split('\n');
-    const headers = lines[0].split(',');
-    return lines.slice(1).map(line => {
-        const values = line.split(',');
-        const entry = {};
-        headers.forEach((header, index) => {
-            entry[header.trim()] = values[index]?.trim();
-        });
-        return entry;
-    });
-}
-
-/**
- * Parses JSON format logs
- * @param {string} content - The raw log content
- * @returns {Array<Object>} - Array of parsed log entries
- */
-function parseJsonLog(content) {
+    resetAnalysis();
+    showLoading();
+    
     try {
-        const data = JSON.parse(content);
-        return Array.isArray(data) ? data : [data];
-    } catch (e) {
-        console.error('Invalid JSON format:', e);
-        return [];
-    }
-}
-
-/**
- * Parses Windows Event (EVTX) logs
- * @param {string} content - The raw log content
- * @returns {Array<Object>} - Array of parsed log entries
- */
-function parseEvtxLog(content) {
-    // For EVTX files, we'll parse the text representation
-    return content.split('\n').map(line => ({
-        raw: line,
-        timestamp: extractTimestamp(line),
-        message: line
-    }));
-}
-
-/**
- * Parses Syslog format logs
- * @param {string} content - The raw log content
- * @returns {Array<Object>} - Array of parsed log entries
- */
-function parseSyslog(content) {
-    return content.split('\n').map(line => {
-        const match = line.match(/^<(\d+)>(\w+\s+\d+\s+\d+:\d+:\d+)\s+(\S+)\s+(.+)/);
-        if (match) {
-            return {
-                priority: match[1],
-                timestamp: match[2],
-                host: match[3],
-                message: match[4]
-            };
+        for (const file of Array.from(files)) {
+            const reader = new FileReader();
+            
+            await new Promise((resolve, reject) => {
+                reader.onload = function(e) {
+                    try {
+                        const content = e.target.result;
+                        const fileExt = file.name.split('.').pop().toLowerCase();
+                        const parser = FILE_HANDLERS[fileExt] || parseTextLog;
+                        
+                        const logEntries = parser(content);
+                        const results = analyzeLogs(logEntries);
+                        updateUI(results);
+                        resolve();
+                    } catch (error) {
+                        console.error(`Error processing ${file.name}:`, error);
+                        reject(error);
+                    }
+                };
+                
+                reader.onerror = () => {
+                    console.error(`Error reading ${file.name}`);
+                    reject(new Error(`Failed to read ${file.name}`));
+                };
+                
+                if (file.name.endsWith('.bin')) {
+                    reader.readAsArrayBuffer(file);
+                } else {
+                    reader.readAsText(file);
+                }
+            });
         }
-        return { raw: line, message: line };
-    });
-}
-
-/**
- * Parses binary log data
- * @param {ArrayBuffer} content - The raw binary content
- * @returns {Array<Object>} - Array of parsed log entries
- */
-function parseBinaryLog(content) {
-    // For binary logs, convert to hex and look for readable patterns
-    const textDecoder = new TextDecoder('utf-8');
-    try {
-        return content.split('').map(char => char.charCodeAt(0).toString(16))
-            .join('')
-            .match(/.{1,32}/g)
-            .map(line => ({
-                raw: line,
-                text: textDecoder.decode(new Uint8Array(line.match(/.{1,2}/g).map(byte => parseInt(byte, 16))))
-            }));
-    } catch (e) {
-        console.error('Binary parsing error:', e);
-        return [];
+    } catch (error) {
+        console.error('Error during file analysis:', error);
+        alert('An error occurred while analyzing the files. Please check the console for details.');
+    } finally {
+        hideLoading();
+        const resultsSection = document.getElementById('results');
+        if (resultsSection.classList.contains('hidden')) {
+            resultsSection.classList.remove('hidden');
+        }
+        setTimeout(scrollToResults, 100);
     }
-}
-
-/**
- * Parses plain text logs
- * @param {string} content - The raw log content
- * @returns {Array<Object>} - Array of parsed log entries
- */
-function parseTextLog(content) {
-    return content.split('\n').map(line => ({
-        raw: line,
-        timestamp: extractTimestamp(line),
-        message: line
-    }));
-}
-
-/**
- * Extracts timestamp from a log line
- * @param {string} line - The log line
- * @returns {string|null} - Extracted timestamp or null if not found
- */
-function extractTimestamp(line) {
-    const patterns = [
-        /\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}/,
-        /\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}:\d{2}/,
-        /\w+\s+\d+\s+\d{2}:\d{2}:\d{2}/
-    ];
-
-    for (const pattern of patterns) {
-        const match = line.match(pattern);
-        if (match) return match[0];
-    }
-    return null;
 }
 
 /**
@@ -603,6 +543,15 @@ function extractTimestamp(line) {
  * @returns {Object} - Analysis results
  */
 function analyzeLogs(logEntries) {
+    if (!Array.isArray(logEntries) || logEntries.length === 0) {
+        return {
+            events: [],
+            recommendations: new Set(),
+            timeline: new Map(),
+            sources: new Map()
+        };
+    }
+
     resetStats();
     
     const results = {
@@ -619,7 +568,6 @@ function analyzeLogs(logEntries) {
         stats.totalEvents++;
         const analysis = analyzeLogLine(message, index + 1);
         
-        // Update severity stats
         if (analysis.severity === 'critical') {
             stats.criticalEvents++;
         } else if (analysis.severity === 'high') {
@@ -627,16 +575,13 @@ function analyzeLogs(logEntries) {
         }
 
         if (analysis.attackType) {
-            // Update attack type stats
             stats.attackTypes[analysis.attackType] = (stats.attackTypes[analysis.attackType] || 0) + 1;
             stats.severityLevels[analysis.severity]++;
 
-            // Update timeline stats
             const timestamp = entry.timestamp || 'Unknown';
             const timeKey = timestamp.split(' ')[0];
             stats.timeline[timeKey] = (stats.timeline[timeKey] || 0) + 1;
 
-            // Update source stats if available
             if (entry.host || entry.source) {
                 const source = entry.host || entry.source;
                 stats.sources[source] = (stats.sources[source] || 0) + 1;
@@ -796,77 +741,57 @@ function generateSecurityAdvice(attackType, frequency, isRecent) {
 }
 
 /**
- * Updates the UI with enhanced security analysis
- * @param {Object} analysis - The analysis results with AI recommendations
+ * Updates the UI with analysis results
+ * @param {Object} results - The analysis results
  */
-function updateUI(analysis) {
-    const results = document.getElementById('results');
+function updateUI(results) {
+    const resultsSection = document.getElementById('results');
     const output = document.getElementById('output');
-    const recommendationsList = document.getElementById('recommendationsList');
+    const recommendationsDiv = document.getElementById('recommendations');
     
-        results.classList.remove('hidden');
+    resultsSection.classList.remove('hidden');
     
-    // Add AI-driven analysis
-    const enhancedAnalysis = generateAIRecommendations(analysis);
-    
-    // Update event list with enhanced context
-    output.innerHTML = enhancedAnalysis.events.map(event => `
-        <p class="event-item ${event.severity}">
-            <strong>Line ${event.lineNumber}</strong> - 
-            <span class="attack-type">${event.attackType.toUpperCase()}</span>
-            <span class="severity-badge ${event.severity}">${event.severity}</span>
-            <span class="timestamp">${event.timestamp || 'Unknown'}</span><br>
-            <code>${event.line}</code>
-        </p>
-    `).join('');
-
-    // Update recommendations with AI-driven insights
-    recommendationsList.innerHTML = enhancedAnalysis.aiRecommendations
-        .sort((a, b) => getPriorityWeight(b.priority) - getPriorityWeight(a.priority))
-        .map(rec => `
-            <div class="recommendation-item ${rec.priority.toLowerCase()}">
-                <div class="rec-header">
-                    <i class="fas fa-shield-alt"></i>
-                    <span class="priority-badge">${rec.priority}</span>
-                    <strong>${rec.type.toUpperCase()}</strong>
-                    <span class="frequency-badge">Frequency: ${rec.frequency}</span>
-                </div>
-                <div class="rec-content">
-                    <p>${rec.description}</p>
-                    <div class="impact-section">
-                        <strong>Potential Impact:</strong>
-                        <ul>${rec.impact.map(i => `<li>${i}</li>`).join('')}</ul>
-                    </div>
-                    <div class="mitigation-section">
-                        <strong>Recommended Actions:</strong>
-                        <ul>${rec.mitigations.map(m => `<li>${m}</li>`).join('')}</ul>
-                    </div>
-                </div>
+    // Update event list
+    if (results.events.length === 0) {
+        output.innerHTML = '<p class="no-events">No security events detected in the log files.</p>';
+        recommendationsDiv.innerHTML = 'No security concerns detected yet. Upload some logs and I\'ll analyze them for you! 🔍';
+    } else {
+        output.innerHTML = results.events.map(event => `
+            <div class="event-item ${event.severity}">
+                <strong>Line ${event.lineNumber}</strong> - 
+                <span class="attack-type">${event.attackType.toUpperCase()}</span>
+                <span class="severity-badge ${event.severity}">${event.severity}</span>
+                <span class="timestamp">${event.timestamp || 'Unknown'}</span><br>
+                <code>${event.line}</code>
             </div>
         `).join('');
 
-    // Update statistics display
+        // Update recommendations
+        recommendationsDiv.innerHTML = Array.from(results.recommendations).map(rec => `
+            <div class="recommendation-item">
+                <div class="rec-content">
+                    <p>${rec}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Update statistics
     document.getElementById('totalEvents').textContent = stats.totalEvents;
     document.getElementById('criticalEvents').textContent = stats.criticalEvents;
     document.getElementById('warningEvents').textContent = stats.warningEvents;
 
     // Update charts
     updateCharts();
-}
 
-/**
- * Gets the weight of a priority level for sorting
- * @param {string} priority - The priority level
- * @returns {number} - Priority weight
- */
-function getPriorityWeight(priority) {
-    const weights = {
-        'Immediate': 4,
-        'High': 3,
-        'Medium': 2,
-        'Low': 1
-    };
-    return weights[priority] || 0;
+    // Update mascot counter
+    const counter = document.querySelector('.critical-alerts-counter');
+    if (stats.criticalEvents > 0) {
+        counter.textContent = stats.criticalEvents;
+        counter.classList.remove('hidden');
+    } else {
+        counter.classList.add('hidden');
+    }
 }
 
 /**
@@ -1191,3 +1116,250 @@ function handleFiles(files) {
     }
     // ... rest of the existing handleFiles function
 }
+
+// Add function to reset counter when starting new analysis
+function resetAnalysis() {
+    const counter = document.querySelector('.critical-alerts-counter');
+    counter.textContent = '0';
+    counter.classList.add('hidden');
+    // ... any other reset logic ...
+}
+
+/**
+ * Parses CSV format logs
+ * @param {string} content - The raw log content
+ * @returns {Array<Object>} - Array of parsed log entries
+ */
+function parseCsvLog(content) {
+    const lines = content.split('\n');
+    const headers = lines[0].split(',');
+    return lines.slice(1).map(line => {
+        const values = line.split(',');
+        const entry = {};
+        headers.forEach((header, index) => {
+            entry[header.trim()] = values[index]?.trim();
+        });
+        return entry;
+    });
+}
+
+/**
+ * Parses JSON format logs
+ * @param {string} content - The raw log content
+ * @returns {Array<Object>} - Array of parsed log entries
+ */
+function parseJsonLog(content) {
+    try {
+        const data = JSON.parse(content);
+        return Array.isArray(data) ? data : [data];
+    } catch (e) {
+        console.error('Invalid JSON format:', e);
+        return [];
+    }
+}
+
+/**
+ * Parses Windows Event (EVTX) logs
+ * @param {string} content - The raw log content
+ * @returns {Array<Object>} - Array of parsed log entries
+ */
+function parseEvtxLog(content) {
+    return content.split('\n').map(line => ({
+        raw: line,
+        timestamp: extractTimestamp(line),
+        message: line
+    }));
+}
+
+/**
+ * Parses Syslog format logs
+ * @param {string} content - The raw log content
+ * @returns {Array<Object>} - Array of parsed log entries
+ */
+function parseSyslog(content) {
+    return content.split('\n').map(line => {
+        const match = line.match(/^<(\d+)>(\w+\s+\d+\s+\d+:\d+:\d+)\s+(\S+)\s+(.+)/);
+        if (match) {
+            return {
+                priority: match[1],
+                timestamp: match[2],
+                host: match[3],
+                message: match[4]
+            };
+        }
+        return { raw: line, message: line };
+    });
+}
+
+/**
+ * Parses binary log data
+ * @param {ArrayBuffer} content - The raw binary content
+ * @returns {Array<Object>} - Array of parsed log entries
+ */
+function parseBinaryLog(content) {
+    const textDecoder = new TextDecoder('utf-8');
+    try {
+        return content.split('').map(char => char.charCodeAt(0).toString(16))
+            .join('')
+            .match(/.{1,32}/g)
+            .map(line => ({
+                raw: line,
+                text: textDecoder.decode(new Uint8Array(line.match(/.{1,2}/g).map(byte => parseInt(byte, 16))))
+            }));
+    } catch (e) {
+        console.error('Binary parsing error:', e);
+        return [];
+    }
+}
+
+/**
+ * Parses plain text logs
+ * @param {string} content - The raw log content
+ * @returns {Array<Object>} - Array of parsed log entries
+ */
+function parseTextLog(content) {
+    return content.split('\n').map(line => ({
+        raw: line,
+        timestamp: extractTimestamp(line),
+        message: line
+    }));
+}
+
+/**
+ * Extracts timestamp from a log line
+ * @param {string} line - The log line
+ * @returns {string|null} - Extracted timestamp or null if not found
+ */
+function extractTimestamp(line) {
+    const patterns = [
+        /\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}/,
+        /\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}:\d{2}/,
+        /\w+\s+\d+\s+\d{2}:\d{2}:\d{2}/
+    ];
+
+    for (const pattern of patterns) {
+        const match = line.match(pattern);
+        if (match) return match[0];
+    }
+    return null;
+}
+
+// Add event listeners for buttons
+document.getElementById('analyzeBtn').addEventListener('click', function() {
+    console.log("Analyze button clicked");
+    const fileInput = document.getElementById('logFile');
+    
+    if (fileInput.files.length === 0) {
+        alert("Please upload a log file to analyze.");
+        return;
+    }
+    
+    console.log("Files selected:", fileInput.files.length);
+    handleFiles(fileInput.files);
+});
+
+document.getElementById('sampleBtn').addEventListener('click', function() {
+    console.log("Sample button clicked");
+    showLoading();
+    
+    // Create sample log entries
+    const sampleEvents = [
+        {
+            line: "Failed login attempt from 192.168.1.100 - possible brute force attack detected (5 attempts in 2 minutes)",
+            lineNumber: 135,
+            attackType: "bruteforce", 
+            severity: "critical",
+            timestamp: "2023-05-15 14:23:10"
+        },
+        {
+            line: "Connection flood detected from 203.0.113.15 - rate limit exceeded (1500 requests/sec)",
+            lineNumber: 267,
+            attackType: "ddos", 
+            severity: "critical",
+            timestamp: "2023-05-15 14:25:32"
+        },
+        {
+            line: "Suspicious process 'malware.exe' attempting to access system files at C:\\Windows\\System32",
+            lineNumber: 432,
+            attackType: "malware", 
+            severity: "high",
+            timestamp: "2023-05-15 14:30:15"
+        },
+        {
+            line: "SQL injection attempt detected in login form: ' OR 1=1 --",
+            lineNumber: 578,
+            attackType: "injection", 
+            severity: "critical",
+            timestamp: "2023-05-15 14:32:45"
+        },
+        {
+            line: "User 'guest' attempting to access admin panel without authorization",
+            lineNumber: 612,
+            attackType: "privEsc", 
+            severity: "high",
+            timestamp: "2023-05-15 14:36:22"
+        },
+        {
+            line: "Port scan detected from 203.0.113.28 - 50 ports scanned in 30 seconds",
+            lineNumber: 789,
+            attackType: "reconnaissance", 
+            severity: "medium",
+            timestamp: "2023-05-15 14:40:18"
+        }
+    ];
+    
+    // Create recommendations
+    const recommendations = new Set([
+        "Implement account lockout policies and strong password requirements. Consider adding multi-factor authentication.",
+        "Deploy DDoS protection services and configure rate limiting on your servers. Monitor traffic patterns for anomalies.",
+        "Keep antivirus software updated, implement application whitelisting, and regularly scan for malware.",
+        "Use parameterized queries, input validation, and escape special characters. Keep web application frameworks updated.",
+        "Regularly audit user permissions, implement principle of least privilege, and monitor privileged account usage.",
+        "Implement network monitoring and intrusion detection systems. Monitor for unusual network activity."
+    ]);
+    
+    // Reset stats
+    resetStats();
+    
+    // Update stats based on sample events
+    stats.totalEvents = sampleEvents.length;
+    stats.criticalEvents = sampleEvents.filter(event => event.severity === 'critical').length;
+    stats.warningEvents = sampleEvents.filter(event => event.severity === 'high').length;
+    
+    // Update attack type stats
+    sampleEvents.forEach(event => {
+        stats.attackTypes[event.attackType] = (stats.attackTypes[event.attackType] || 0) + 1;
+        stats.severityLevels[event.severity]++;
+        
+        const timeKey = event.timestamp.split(' ')[0];
+        stats.timeline[timeKey] = (stats.timeline[timeKey] || 0) + 1;
+        
+        // Extract IP addresses for source stats
+        const ipMatch = event.line.match(/\d+\.\d+\.\d+\.\d+/);
+        if (ipMatch) {
+            stats.sources[ipMatch[0]] = (stats.sources[ipMatch[0]] || 0) + 1;
+        }
+    });
+    
+    // Build results object
+    const results = {
+        events: sampleEvents,
+        recommendations: recommendations
+    };
+    
+    // Show results
+    const resultsSection = document.getElementById('results');
+    resultsSection.classList.remove('hidden');
+    
+    updateUI(results);
+    
+    // Update mascot counter
+    const counter = document.querySelector('.critical-alerts-counter');
+    counter.textContent = stats.criticalEvents;
+    counter.classList.remove('hidden');
+    
+    hideLoading();
+    
+    // Scroll to results with a small delay to ensure UI is updated
+    setTimeout(scrollToResults, 100);
+});

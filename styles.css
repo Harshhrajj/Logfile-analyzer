@@ -73,20 +73,20 @@ body {
 /* Theme Toggle Button */
 .theme-toggle {
     position: fixed;
-    bottom: 20px;
+    top: 20px;
     right: 20px;
+    z-index: 1000;
     width: 50px;
     height: 50px;
-    border-radius: 50%;
+    border-radius: 25px;
     background: var(--primary-color);
+    border: 2px solid var(--text-color);
     color: var(--text-color);
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: var(--shadow);
-    z-index: 100;
-    border: none;
+    font-size: 1.2rem;
     transition: all 0.3s ease;
 }
 
@@ -701,52 +701,147 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Security Mascot Styles */
 .security-mascot {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 150px;
     z-index: 1000;
     transition: transform 0.3s ease;
+}
+
+.security-mascot img {
+    width: 80px;
+    height: auto;
+    cursor: pointer;
 }
 
 .security-mascot:hover {
     transform: scale(1.1);
 }
 
-.security-mascot img {
-    width: 100%;
-    height: auto;
-    display: block;
+.critical-alerts-counter {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff4444;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    border: 2px solid var(--bg-color);
 }
 
-.mascot-speech-bubble {
-    position: absolute;
-    background: var(--primary-color);
-    border-radius: 15px;
+.critical-alerts-counter.hidden {
+    display: none;
+}
+
+/* File Preview Styles */
+.file-preview {
+    margin-top: 20px;
     padding: 15px;
-    max-width: 200px;
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.file-preview h3 {
     color: var(--text-color);
-    font-size: 14px;
-    opacity: 0;
-    transform: translateY(20px);
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-list li {
+    padding: 8px 12px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-list li::before {
+    content: '📄';
+    font-size: 1.2rem;
+}
+
+/* Analyze Button Styles */
+.analyze-button {
+    display: block;
+    padding: 12px 24px;
+    background: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    bottom: 130px;
-    right: 20px;
 }
 
-.mascot-speech-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    right: 20px;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid var(--primary-color);
+.analyze-button:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
 }
 
-.security-mascot:hover .mascot-speech-bubble {
-    opacity: 1;
-    transform: translateY(0);
+.analyze-button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.analyze-button i {
+    margin-right: 8px;
+}
+
+/* Button Group */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-group button {
+    flex: 1;
+}
+
+/* Sample Button */
+.sample-button {
+    background: var(--secondary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sample-button:hover {
+    background: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.sample-button i {
+    margin-right: 8px;
 }

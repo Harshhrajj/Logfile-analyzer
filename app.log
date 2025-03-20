@@ -1,0 +1,15 @@
+2025-03-20 22:31:18,534 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-20 22:31:18,534 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-20 22:31:18,540 - INFO -  * Restarting with stat
+2025-03-20 22:31:19,165 - WARNING -  * Debugger is active!
+2025-03-20 22:31:19,182 - INFO -  * Debugger PIN: 137-386-504
+2025-03-20 22:31:50,387 - INFO - 127.0.0.1 - - [20/Mar/2025 22:31:50] "GET / HTTP/1.1" 200 -
+2025-03-20 22:31:50,540 - INFO - 127.0.0.1 - - [20/Mar/2025 22:31:50] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-20 22:31:50,636 - INFO - 127.0.0.1 - - [20/Mar/2025 22:31:50] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-20 22:31:50,958 - INFO - 127.0.0.1 - - [20/Mar/2025 22:31:50] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-20 22:31:51,468 - INFO - 127.0.0.1 - - [20/Mar/2025 22:31:51] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-20 22:40:17,396 - INFO - 127.0.0.1 - - [20/Mar/2025 22:40:17] "POST /upload HTTP/1.1" 200 -
+2025-03-20 22:49:13,055 - INFO - 127.0.0.1 - - [20/Mar/2025 22:49:13] "POST /upload HTTP/1.1" 200 -
+2025-03-20 22:49:18,111 - INFO - 127.0.0.1 - - [20/Mar/2025 22:49:18] "POST /upload HTTP/1.1" 200 -
+2025-03-20 22:49:23,670 - INFO - 127.0.0.1 - - [20/Mar/2025 22:49:23] "POST /upload HTTP/1.1" 200 -
