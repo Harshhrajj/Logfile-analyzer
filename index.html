@@ -47,9 +47,14 @@
                                 <input type="file" id="logFile" accept=".txt,.log,.csv,.json,.evtx,.syslog,.bin" multiple required>
                             </label>
                         </div>
-                        <button type="button" id="analyzeBtn">
-                            <i class="fas fa-search"></i> Analyze Logs
-                        </button>
+                        <div class="button-group">
+                            <button type="button" id="analyzeBtn" class="analyze-button">
+                                <i class="fas fa-search"></i> Analyze Logs
+                            </button>
+                            <button type="button" id="sampleBtn" class="sample-button">
+                                <i class="fas fa-flask"></i> Try Sample Logs
+                            </button>
+                        </div>
                     </form>
                 </section>
 
@@ -117,11 +122,9 @@
         </button>
 
         <!-- Add the security mascot cat -->
-        <div class="security-mascot" aria-label="Officer Whiskers - Security Cat Mascot">
-            <img src="assets/cat.png" alt="Officer Whiskers, the security cat mascot">
-            <div class="mascot-speech-bubble">
-                Hi! I'm Officer Whiskers, your security companion. I'll help keep your logs safe! 😺
-            </div>
+        <div class="security-mascot" aria-label="Security Cat Mascot">
+            <img src="assets/cat.png" alt="Security cat mascot">
+            <div class="critical-alerts-counter hidden" aria-label="Critical alerts count">0</div>
         </div>
     </div>
 

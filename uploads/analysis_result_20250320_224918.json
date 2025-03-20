@@ -1,0 +1,122 @@
+{
+  "stats": {
+    "total_attacks": 17,
+    "sql_injection_count": 4,
+    "xss_count": 5,
+    "ddos_count": 0,
+    "brute_force_count": 8,
+    "unique_ips": 18
+  },
+  "ip_frequency": {
+    "192.168.1.100": 1,
+    "192.168.1.101": 1,
+    "192.168.1.102": 1,
+    "192.168.1.103": 1,
+    "192.168.1.104": 1,
+    "192.168.1.105": 5,
+    "192.168.1.106": 1,
+    "192.168.1.107": 1,
+    "192.168.1.108": 10,
+    "192.168.1.109": 1,
+    "192.168.1.110": 1,
+    "192.168.1.111": 1,
+    "192.168.1.112": 3,
+    "192.168.1.113": 1,
+    "192.168.1.114": 1,
+    "192.168.1.115": 1,
+    "192.168.1.116": 1,
+    "192.168.1.117": 10
+  },
+  "sql_injection": [
+    {
+      "line": 2,
+      "ip": "192.168.1.101",
+      "content": "[2024-03-15 08:01:24] 192.168.1.101 - - \"GET /admin.php?id=1 UNION SELECT username,password FROM users-- HTTP/1.1\" 403 1234"
+    },
+    {
+      "line": 4,
+      "ip": "192.168.1.103",
+      "content": "[2024-03-15 08:01:26] 192.168.1.103 - - \"GET /profile.php?id=1; DROP TABLE users;-- HTTP/1.1\" 403 567"
+    },
+    {
+      "line": 23,
+      "ip": "192.168.1.109",
+      "content": "[2024-03-15 08:03:01] 192.168.1.109 - - \"POST /api/user HTTP/1.1\" 400 567 \"SELECT * FROM users WHERE id = 1\""
+    },
+    {
+      "line": 30,
+      "ip": "192.168.1.114",
+      "content": "[2024-03-15 08:03:08] 192.168.1.114 - - \"GET /profile?id=-1 UNION SELECT @@version-- HTTP/1.1\" 403 567"
+    }
+  ],
+  "xss": [
+    {
+      "line": 3,
+      "ip": "192.168.1.102",
+      "content": "[2024-03-15 08:01:25] 192.168.1.102 - - \"POST /comment.php HTTP/1.1\" 400 789 \"<script>alert('XSS Attack')</script>\""
+    },
+    {
+      "line": 5,
+      "ip": "192.168.1.104",
+      "content": "[2024-03-15 08:01:27] 192.168.1.104 - - \"GET /search.php?q=<script>document.cookie</script> HTTP/1.1\" 400 890"
+    },
+    {
+      "line": 12,
+      "ip": "192.168.1.107",
+      "content": "[2024-03-15 08:01:34] 192.168.1.107 - - \"GET /page.php?redirect=javascript:alert(1) HTTP/1.1\" 400 678"
+    },
+    {
+      "line": 24,
+      "ip": "192.168.1.110",
+      "content": "[2024-03-15 08:03:02] 192.168.1.110 - - \"GET /page?param=<img src=x onerror=alert(1)> HTTP/1.1\" 400 789"
+    },
+    {
+      "line": 31,
+      "ip": "192.168.1.115",
+      "content": "[2024-03-15 08:03:09] 192.168.1.115 - - \"GET /article?id=<script>eval(alert(1))</script> HTTP/1.1\" 400 678"
+    }
+  ],
+  "ddos": [],
+  "brute_force": [
+    {
+      "line": 6,
+      "ip": "192.168.1.105",
+      "content": "[2024-03-15 08:01:28] 192.168.1.105 - - \"POST /login.php HTTP/1.1\" 401 234 \"Failed login attempt for user admin\""
+    },
+    {
+      "line": 7,
+      "ip": "192.168.1.105",
+      "content": "[2024-03-15 08:01:29] 192.168.1.105 - - \"POST /login.php HTTP/1.1\" 401 234 \"Failed login attempt for user admin\""
+    },
+    {
+      "line": 8,
+      "ip": "192.168.1.105",
+      "content": "[2024-03-15 08:01:30] 192.168.1.105 - - \"POST /login.php HTTP/1.1\" 401 234 \"Failed login attempt for user admin\""
+    },
+    {
+      "line": 9,
+      "ip": "192.168.1.105",
+      "content": "[2024-03-15 08:01:31] 192.168.1.105 - - \"POST /login.php HTTP/1.1\" 401 234 \"Failed login attempt for user admin\""
+    },
+    {
+      "line": 10,
+      "ip": "192.168.1.105",
+      "content": "[2024-03-15 08:01:32] 192.168.1.105 - - \"POST /login.php HTTP/1.1\" 401 234 \"Failed login attempt for user admin\""
+    },
+    {
+      "line": 26,
+      "ip": "192.168.1.112",
+      "content": "[2024-03-15 08:03:04] 192.168.1.112 - - \"POST /login HTTP/1.1\" 401 123 \"Authentication failure - invalid password\""
+    },
+    {
+      "line": 27,
+      "ip": "192.168.1.112",
+      "content": "[2024-03-15 08:03:05] 192.168.1.112 - - \"POST /login HTTP/1.1\" 401 123 \"Authentication failure - invalid password\""
+    },
+    {
+      "line": 28,
+      "ip": "192.168.1.112",
+      "content": "[2024-03-15 08:03:06] 192.168.1.112 - - \"POST /login HTTP/1.1\" 401 123 \"Authentication failure - invalid password\""
+    }
+  ]
+}
