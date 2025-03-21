@@ -1,0 +1,31 @@
+[2024-03-20 08:15:23] INFO - User login successful from IP: 192.168.1.100
+[2024-03-20 08:15:45] WARNING - Failed login attempt from IP: 45.33.12.234
+[2024-03-20 08:15:46] WARNING - Failed login attempt from IP: 45.33.12.234
+[2024-03-20 08:15:47] WARNING - Failed login attempt from IP: 45.33.12.234
+[2024-03-20 08:15:48] WARNING - Failed login attempt from IP: 45.33.12.234
+[2024-03-20 08:15:49] ALERT - Possible brute force attack detected from IP: 45.33.12.234
+[2024-03-20 08:16:23] ERROR - SQL Injection attempt detected: IP: 103.56.78.90, Query: "SELECT * FROM users WHERE username = 'admin' OR '1'='1'--"
+[2024-03-20 08:17:10] INFO - Successful file upload from IP: 192.168.1.105
+[2024-03-20 08:17:45] ERROR - XSS attempt detected: IP: 87.23.45.167, Payload: "<script>alert(document.cookie)</script>"
+[2024-03-20 08:18:00] INFO - User logout from IP: 192.168.1.100
+[2024-03-20 08:18:23] WARNING - High rate of requests from IP: 78.45.23.189
+[2024-03-20 08:18:24] WARNING - High rate of requests from IP: 78.45.23.189
+[2024-03-20 08:18:25] WARNING - High rate of requests from IP: 78.45.23.189
+[2024-03-20 08:18:26] ALERT - Possible DDoS attack detected from IP: 78.45.23.189
+[2024-03-20 08:19:15] ERROR - SQL Injection attempt detected: IP: 103.56.78.90, Query: "UNION SELECT username,password FROM users--"
+[2024-03-20 08:20:05] ERROR - XSS attempt detected: IP: 87.23.45.167, Payload: "<img src=x onerror=alert('XSS')>"
+[2024-03-20 08:21:30] INFO - User login successful from IP: 192.168.1.102
+[2024-03-20 08:22:15] ERROR - SQL Injection attempt detected: IP: 103.56.78.90, Query: "1'; DROP TABLE users--"
+[2024-03-20 08:23:00] WARNING - Failed login attempt from IP: 45.33.12.234
+[2024-03-20 08:23:01] WARNING - Failed login attempt from IP: 45.33.12.234
+[2024-03-20 08:23:02] WARNING - Failed login attempt from IP: 45.33.12.234
+[2024-03-20 08:23:03] ALERT - Brute force attack continuing from IP: 45.33.12.234
+[2024-03-20 08:24:15] ERROR - XSS attempt detected: IP: 87.23.45.167, Payload: "<iframe src=javascript:alert('XSS')>"
+[2024-03-20 08:25:00] WARNING - High rate of requests from IP: 78.45.23.189
+[2024-03-20 08:25:01] WARNING - High rate of requests from IP: 78.45.23.189
+[2024-03-20 08:25:02] ALERT - DDoS attack continuing from IP: 78.45.23.189
+[2024-03-20 08:26:30] INFO - User login successful from IP: 192.168.1.103
+[2024-03-20 08:27:15] INFO - File access attempt from IP: 192.168.1.103
+[2024-03-20 08:28:00] ERROR - SQL Injection attempt detected: IP: 103.56.78.90, Query: "SELECT @@version--"
+[2024-03-20 08:29:45] INFO - User logout from IP: 192.168.1.102
+[2024-03-20 08:30:00] INFO - System health check passed 

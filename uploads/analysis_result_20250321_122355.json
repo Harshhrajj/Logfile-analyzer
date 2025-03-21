@@ -1,0 +1,92 @@
+{
+  "stats": {
+    "total_attacks": 13,
+    "sql_injection_count": 3,
+    "xss_count": 3,
+    "ddos_count": 0,
+    "brute_force_count": 7,
+    "unique_ips": 8
+  },
+  "ip_frequency": {
+    "192.168.1.100": 2,
+    "45.33.12.234": 9,
+    "103.56.78.90": 4,
+    "192.168.1.105": 1,
+    "87.23.45.167": 3,
+    "78.45.23.189": 7,
+    "192.168.1.102": 2,
+    "192.168.1.103": 2
+  },
+  "sql_injection": [
+    {
+      "line": 7,
+      "ip": "103.56.78.90",
+      "content": "[2024-03-20 08:16:23] ERROR - SQL Injection attempt detected: IP: 103.56.78.90, Query: \"SELECT * FROM users WHERE username = 'admin' OR '1'='1'--\""
+    },
+    {
+      "line": 15,
+      "ip": "103.56.78.90",
+      "content": "[2024-03-20 08:19:15] ERROR - SQL Injection attempt detected: IP: 103.56.78.90, Query: \"UNION SELECT username,password FROM users--\""
+    },
+    {
+      "line": 18,
+      "ip": "103.56.78.90",
+      "content": "[2024-03-20 08:22:15] ERROR - SQL Injection attempt detected: IP: 103.56.78.90, Query: \"1'; DROP TABLE users--\""
+    }
+  ],
+  "xss": [
+    {
+      "line": 9,
+      "ip": "87.23.45.167",
+      "content": "[2024-03-20 08:17:45] ERROR - XSS attempt detected: IP: 87.23.45.167, Payload: \"<script>alert(document.cookie)</script>\""
+    },
+    {
+      "line": 16,
+      "ip": "87.23.45.167",
+      "content": "[2024-03-20 08:20:05] ERROR - XSS attempt detected: IP: 87.23.45.167, Payload: \"<img src=x onerror=alert('XSS')>\""
+    },
+    {
+      "line": 23,
+      "ip": "87.23.45.167",
+      "content": "[2024-03-20 08:24:15] ERROR - XSS attempt detected: IP: 87.23.45.167, Payload: \"<iframe src=javascript:alert('XSS')>\""
+    }
+  ],
+  "ddos": [],
+  "brute_force": [
+    {
+      "line": 2,
+      "ip": "45.33.12.234",
+      "content": "[2024-03-20 08:15:45] WARNING - Failed login attempt from IP: 45.33.12.234"
+    },
+    {
+      "line": 3,
+      "ip": "45.33.12.234",
+      "content": "[2024-03-20 08:15:46] WARNING - Failed login attempt from IP: 45.33.12.234"
+    },
+    {
+      "line": 4,
+      "ip": "45.33.12.234",
+      "content": "[2024-03-20 08:15:47] WARNING - Failed login attempt from IP: 45.33.12.234"
+    },
+    {
+      "line": 5,
+      "ip": "45.33.12.234",
+      "content": "[2024-03-20 08:15:48] WARNING - Failed login attempt from IP: 45.33.12.234"
+    },
+    {
+      "line": 19,
+      "ip": "45.33.12.234",
+      "content": "[2024-03-20 08:23:00] WARNING - Failed login attempt from IP: 45.33.12.234"
+    },
+    {
+      "line": 20,
+      "ip": "45.33.12.234",
+      "content": "[2024-03-20 08:23:01] WARNING - Failed login attempt from IP: 45.33.12.234"
+    },
+    {
+      "line": 21,
+      "ip": "45.33.12.234",
+      "content": "[2024-03-20 08:23:02] WARNING - Failed login attempt from IP: 45.33.12.234"
+    }
+  ]
+}

@@ -13,3 +13,87 @@
 2025-03-20 22:49:13,055 - INFO - 127.0.0.1 - - [20/Mar/2025 22:49:13] "POST /upload HTTP/1.1" 200 -
 2025-03-20 22:49:18,111 - INFO - 127.0.0.1 - - [20/Mar/2025 22:49:18] "POST /upload HTTP/1.1" 200 -
 2025-03-20 22:49:23,670 - INFO - 127.0.0.1 - - [20/Mar/2025 22:49:23] "POST /upload HTTP/1.1" 200 -
+2025-03-20 23:46:30,592 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-20 23:46:30,593 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-20 23:46:30,603 - INFO -  * Restarting with stat
+2025-03-20 23:46:31,298 - WARNING -  * Debugger is active!
+2025-03-20 23:46:31,310 - INFO -  * Debugger PIN: 137-386-504
+2025-03-20 23:46:47,850 - INFO - 127.0.0.1 - - [20/Mar/2025 23:46:47] "GET / HTTP/1.1" 200 -
+2025-03-20 23:46:48,031 - INFO - 127.0.0.1 - - [20/Mar/2025 23:46:48] "GET /static/images/officer_whiskers.png HTTP/1.1" 200 -
+2025-03-20 23:46:48,080 - INFO - 127.0.0.1 - - [20/Mar/2025 23:46:48] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-20 23:46:48,248 - INFO - 127.0.0.1 - - [20/Mar/2025 23:46:48] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-20 23:46:49,595 - INFO - 127.0.0.1 - - [20/Mar/2025 23:46:49] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-20 23:46:56,208 - INFO - 127.0.0.1 - - [20/Mar/2025 23:46:56] "POST /upload HTTP/1.1" 200 -
+2025-03-20 23:47:16,297 - INFO - 127.0.0.1 - - [20/Mar/2025 23:47:16] "GET /download/json HTTP/1.1" 200 -
+2025-03-20 23:47:56,381 - INFO - 127.0.0.1 - - [20/Mar/2025 23:47:56] "GET / HTTP/1.1" 200 -
+2025-03-20 23:47:56,432 - INFO - 127.0.0.1 - - [20/Mar/2025 23:47:56] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-20 23:47:56,651 - INFO - 127.0.0.1 - - [20/Mar/2025 23:47:56] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-20 23:47:56,758 - INFO - 127.0.0.1 - - [20/Mar/2025 23:47:56] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-20 23:53:08,729 - INFO - 127.0.0.1 - - [20/Mar/2025 23:53:08] "GET / HTTP/1.1" 200 -
+2025-03-20 23:53:08,783 - INFO - 127.0.0.1 - - [20/Mar/2025 23:53:08] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-20 23:53:32,211 - INFO - 127.0.0.1 - - [20/Mar/2025 23:53:32] "GET / HTTP/1.1" 200 -
+2025-03-20 23:53:32,259 - INFO - 127.0.0.1 - - [20/Mar/2025 23:53:32] "GET /static/images/officer_whiskers.png HTTP/1.1" 200 -
+2025-03-20 23:53:32,473 - INFO - 127.0.0.1 - - [20/Mar/2025 23:53:32] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-20 23:53:32,565 - INFO - 127.0.0.1 - - [20/Mar/2025 23:53:32] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 00:07:22,954 - INFO - 127.0.0.1 - - [21/Mar/2025 00:07:22] "GET / HTTP/1.1" 200 -
+2025-03-21 00:07:23,001 - INFO - 127.0.0.1 - - [21/Mar/2025 00:07:23] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-21 00:07:23,217 - INFO - 127.0.0.1 - - [21/Mar/2025 00:07:23] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-21 00:07:23,312 - INFO - 127.0.0.1 - - [21/Mar/2025 00:07:23] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-21 00:07:27,429 - INFO - 127.0.0.1 - - [21/Mar/2025 00:07:27] "POST /upload HTTP/1.1" 200 -
+2025-03-21 00:25:43,419 - INFO - 127.0.0.1 - - [21/Mar/2025 00:25:43] "GET / HTTP/1.1" 200 -
+2025-03-21 00:25:43,469 - INFO - 127.0.0.1 - - [21/Mar/2025 00:25:43] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-21 00:25:43,675 - INFO - 127.0.0.1 - - [21/Mar/2025 00:25:43] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-21 00:25:43,779 - INFO - 127.0.0.1 - - [21/Mar/2025 00:25:43] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2025-03-21 00:26:59,942 - INFO - 127.0.0.1 - - [21/Mar/2025 00:26:59] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:16:57,435 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-03-21 12:16:57,435 - INFO - [33mPress CTRL+C to quit[0m
+2025-03-21 12:16:57,442 - INFO -  * Restarting with stat
+2025-03-21 12:16:57,793 - WARNING -  * Debugger is active!
+2025-03-21 12:16:57,817 - INFO -  * Debugger PIN: 137-386-504
+2025-03-21 12:17:12,381 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:12] "GET / HTTP/1.1" 200 -
+2025-03-21 12:17:12,500 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:12] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-21 12:17:12,627 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:12] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-21 12:17:12,745 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:12] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:17:13,068 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-03-21 12:17:14,687 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:14] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:17:24,829 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:24] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:17:29,955 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:29] "GET /download/json HTTP/1.1" 200 -
+2025-03-21 12:17:39,877 - INFO - 127.0.0.1 - - [21/Mar/2025 12:17:39] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:19:24,904 - INFO - 127.0.0.1 - - [21/Mar/2025 12:19:24] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:21:24,964 - INFO - 127.0.0.1 - - [21/Mar/2025 12:21:24] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:23:48,587 - INFO - 127.0.0.1 - - [21/Mar/2025 12:23:48] "GET / HTTP/1.1" 200 -
+2025-03-21 12:23:48,634 - INFO - 127.0.0.1 - - [21/Mar/2025 12:23:48] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-21 12:23:48,851 - INFO - 127.0.0.1 - - [21/Mar/2025 12:23:48] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-21 12:23:48,961 - INFO - 127.0.0.1 - - [21/Mar/2025 12:23:48] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:23:55,602 - INFO - 127.0.0.1 - - [21/Mar/2025 12:23:55] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:23:58,359 - INFO - 127.0.0.1 - - [21/Mar/2025 12:23:58] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:24:03,255 - INFO - 127.0.0.1 - - [21/Mar/2025 12:24:03] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:25:37,458 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:37] "GET / HTTP/1.1" 200 -
+2025-03-21 12:25:37,498 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:37] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-21 12:25:37,725 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:37] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-21 12:25:37,817 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:37] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:25:38,810 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:38] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:25:40,926 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:40] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:25:59,488 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:59] "GET / HTTP/1.1" 200 -
+2025-03-21 12:25:59,799 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:59] "GET /static/css/style.css HTTP/1.1" 200 -
+2025-03-21 12:25:59,847 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:59] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-21 12:25:59,847 - INFO - 127.0.0.1 - - [21/Mar/2025 12:25:59] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:26:00,916 - INFO - 127.0.0.1 - - [21/Mar/2025 12:26:00] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:26:05,572 - INFO - 127.0.0.1 - - [21/Mar/2025 12:26:05] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:36:32,082 - INFO - 127.0.0.1 - - [21/Mar/2025 12:36:32] "GET / HTTP/1.1" 200 -
+2025-03-21 12:36:32,132 - INFO - 127.0.0.1 - - [21/Mar/2025 12:36:32] "GET /static/css/officer_whiskers.css HTTP/1.1" 200 -
+2025-03-21 12:36:32,301 - INFO - 127.0.0.1 - - [21/Mar/2025 12:36:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-21 12:36:32,442 - INFO - 127.0.0.1 - - [21/Mar/2025 12:36:32] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-21 12:36:32,456 - INFO - 127.0.0.1 - - [21/Mar/2025 12:36:32] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:36:32,458 - INFO - 127.0.0.1 - - [21/Mar/2025 12:36:32] "GET /static/js/officer_whiskers.js HTTP/1.1" 200 -
+2025-03-21 12:36:43,596 - INFO - 127.0.0.1 - - [21/Mar/2025 12:36:43] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:37:45,105 - INFO - 127.0.0.1 - - [21/Mar/2025 12:37:45] "GET / HTTP/1.1" 200 -
+2025-03-21 12:37:45,139 - INFO - 127.0.0.1 - - [21/Mar/2025 12:37:45] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2025-03-21 12:37:45,347 - INFO - 127.0.0.1 - - [21/Mar/2025 12:37:45] "[36mGET /static/css/officer_whiskers.css HTTP/1.1[0m" 304 -
+2025-03-21 12:37:45,457 - INFO - 127.0.0.1 - - [21/Mar/2025 12:37:45] "GET /static/js/main.js HTTP/1.1" 200 -
+2025-03-21 12:37:45,457 - INFO - 127.0.0.1 - - [21/Mar/2025 12:37:45] "[36mGET /static/js/officer_whiskers.js HTTP/1.1[0m" 304 -
+2025-03-21 12:37:45,782 - INFO - 127.0.0.1 - - [21/Mar/2025 12:37:45] "[36mGET /static/images/officer_whiskers.png HTTP/1.1[0m" 304 -
+2025-03-21 12:37:51,991 - INFO - 127.0.0.1 - - [21/Mar/2025 12:37:51] "POST /upload HTTP/1.1" 200 -
+2025-03-21 12:38:04,769 - INFO - 127.0.0.1 - - [21/Mar/2025 12:38:04] "GET /download/json HTTP/1.1" 200 -

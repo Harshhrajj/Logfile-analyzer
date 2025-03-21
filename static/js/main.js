@@ -118,23 +118,6 @@ analyzeBtn.addEventListener('click', () => {
     uploadFile(selectedFile);
 });
 
-// Update Officer Whiskers
-function updateOfficerWhiskers(issueCount) {
-    const speechBubble = document.querySelector('.speech-bubble');
-    const issueCountElement = document.getElementById('issueCount');
-    
-    issueCountElement.textContent = issueCount;
-    speechBubble.classList.remove('d-none');
-    
-    // Add animation class
-    speechBubble.classList.add('animate__animated', 'animate__bounceIn');
-    
-    // Remove animation class after animation ends
-    setTimeout(() => {
-        speechBubble.classList.remove('animate__animated', 'animate__bounceIn');
-    }, 1000);
-}
-
 // Display analysis results
 function displayResults(results) {
     // Show results section
@@ -151,6 +134,18 @@ function displayResults(results) {
     
     // Update detailed results table
     updateDetailedResults(results);
+    
+    // Calculate total security issues
+    const totalIssues = results.stats.sql_injection_count + 
+                       results.stats.xss_count + 
+                       results.stats.brute_force_count + 
+                       results.stats.ddos_count;
+    
+    // Trigger event for Officer Whiskers
+    const event = new CustomEvent('securityIssuesDetected', {
+        detail: { count: totalIssues }
+    });
+    document.dispatchEvent(event);
 }
 
 // Update charts with new data
