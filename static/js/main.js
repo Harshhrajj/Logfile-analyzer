@@ -26,6 +26,8 @@ let ipChart = null;
 // Initialize drag and drop
 const dropZone = document.getElementById('dropZone');
 const fileInput = document.getElementById('fileInput');
+const analyzeBtn = document.getElementById('analyzeBtn');
+let selectedFile = null;
 
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
     dropZone.addEventListener(eventName, preventDefaults, false);
@@ -60,18 +62,27 @@ fileInput.addEventListener('change', handleFiles, false);
 function handleDrop(e) {
     const dt = e.dataTransfer;
     const files = dt.files;
-    handleFiles({ target: { files: files } });
+    if (files.length) {
+        selectedFile = files[0];
+        dropZone.innerHTML = `<i class="fas fa-file-alt"></i><p>Selected: ${selectedFile.name}</p>`;
+    }
 }
 
 function handleFiles(e) {
     const files = e.target.files;
     if (files.length) {
-        uploadFile(files[0]);
+        selectedFile = files[0];
+        dropZone.innerHTML = `<i class="fas fa-file-alt"></i><p>Selected: ${selectedFile.name}</p>`;
     }
 }
 
 // File upload and analysis
 async function uploadFile(file) {
+    if (!file) {
+        alert('Please select a file first');
+        return;
+    }
+
     // Show loading spinner
     document.getElementById('loadingSpinner').classList.remove('d-none');
     
@@ -88,7 +99,9 @@ async function uploadFile(file) {
         
         if (data.success) {
             displayResults(data.results);
-            updateOfficerWhiskers(data.results.stats.total_attacks);
+            // Reset file selection after successful analysis
+            selectedFile = null;
+            dropZone.innerHTML = `<i class="fas fa-cloud-upload-alt"></i><p>Drag and drop log files here or click to select</p>`;
         } else {
             alert(data.error || 'Error analyzing file');
         }
@@ -99,6 +112,11 @@ async function uploadFile(file) {
         document.getElementById('loadingSpinner').classList.add('d-none');
     }
 }
+
+// Add analyze button event listener
+analyzeBtn.addEventListener('click', () => {
+    uploadFile(selectedFile);
+});
 
 // Update Officer Whiskers
 function updateOfficerWhiskers(issueCount) {
