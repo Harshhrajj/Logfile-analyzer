@@ -10,6 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/officer_whiskers.css') }}">
 </head>
 <body class="light-theme">
     <nav class="navbar navbar-expand-lg">
@@ -43,13 +44,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="officer-whiskers">
-                    <img src="{{ url_for('static', filename='images/officer_whiskers.png') }}" alt="Officer Whiskers">
-                    <div class="speech-bubble d-none">
-                        <p>Meow! I found <span id="issueCount">0</span> security issues!</p>
-                        <p class="small-text">Let me analyze your logs...</p>
-                    </div>
-                </div>
+                <!-- Removing static Officer Whiskers implementation since it's handled by JS -->
             </div>
         </div>
 
@@ -131,5 +126,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/officer_whiskers.js') }}"></script>
 </body>
 </html> 
