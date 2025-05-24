@@ -232,6 +232,92 @@ const SECURITY_PATTERNS = {
             'Network segmentation',
             'Security monitoring'
         ]
+    },
+    phishing: {
+        patterns: [
+            /phishing attempt/i,
+            /suspicious email/i,
+            /malicious link/i,
+            /credential harvesting/i,
+            /fake login page/i,
+            /social engineering/i
+        ],
+        severity: 'high',
+        context: [
+            'Email systems',
+            'User communications',
+            'Authentication systems'
+        ],
+        impact: [
+            'Credential theft',
+            'Identity theft',
+            'Financial fraud',
+            'Data breach'
+        ],
+        mitigations: [
+            'Email filtering and authentication',
+            'User security awareness training',
+            'Multi-factor authentication',
+            'URL filtering',
+            'Regular security updates'
+        ]
+    },
+    cryptoMining: {
+        patterns: [
+            /cryptocurrency mining/i,
+            /crypto miner/i,
+            /mining pool/i,
+            /unusual CPU usage/i,
+            /GPU mining/i,
+            /crypto wallet/i
+        ],
+        severity: 'high',
+        context: [
+            'System resources',
+            'CPU/GPU usage',
+            'Network bandwidth'
+        ],
+        impact: [
+            'Resource theft',
+            'Performance degradation',
+            'Increased energy costs',
+            'System instability'
+        ],
+        mitigations: [
+            'Resource usage monitoring',
+            'Process whitelisting',
+            'Network traffic analysis',
+            'Regular system audits',
+            'Security patch management'
+        ]
+    },
+    zeroDay: {
+        patterns: [
+            /unknown vulnerability/i,
+            /zero-day exploit/i,
+            /unpatched vulnerability/i,
+            /new attack vector/i,
+            /unknown malware/i
+        ],
+        severity: 'critical',
+        context: [
+            'System vulnerabilities',
+            'Security patches',
+            'Attack vectors'
+        ],
+        impact: [
+            'System compromise',
+            'Data breach',
+            'Service disruption',
+            'Widespread damage'
+        ],
+        mitigations: [
+            'Regular security updates',
+            'Vulnerability management',
+            'Network segmentation',
+            'Security monitoring',
+            'Incident response plan'
+        ]
     }
 };
 
@@ -641,7 +727,10 @@ function getRecommendation(attackType) {
         injection: "Use parameterized queries, input validation, and escape special characters. Keep web application frameworks updated.",
         privEsc: "Regularly audit user permissions, implement principle of least privilege, and monitor privileged account usage.",
         dataLeak: "Implement data access controls, encrypt sensitive data, and monitor data access patterns.",
-        reconnaissance: "Implement network monitoring and intrusion detection systems. Monitor for unusual network activity."
+        reconnaissance: "Implement network monitoring and intrusion detection systems. Monitor for unusual network activity.",
+        phishing: "Use email filtering and authentication, user security awareness training, and multi-factor authentication.",
+        cryptoMining: "Monitor resource usage, process whitelisting, and network traffic analysis. Regularly audit system configurations.",
+        zeroDay: "Regularly update security patches and implement vulnerability management. Monitor for unusual system behavior."
     };
 
     return recommendations[attackType] || "Monitor system logs regularly and keep all software updated.";
@@ -784,13 +873,15 @@ function updateUI(results) {
     // Update charts
     updateCharts();
 
-    // Update mascot counter
+    // Update mascot counter (only if it exists)
     const counter = document.querySelector('.critical-alerts-counter');
-    if (stats.criticalEvents > 0) {
-        counter.textContent = stats.criticalEvents;
-        counter.classList.remove('hidden');
-    } else {
-        counter.classList.add('hidden');
+    if (counter) {
+        if (stats.criticalEvents > 0) {
+            counter.textContent = stats.criticalEvents;
+            counter.classList.remove('hidden');
+        } else {
+            counter.classList.add('hidden');
+        }
     }
 }
 
@@ -1120,8 +1211,10 @@ function handleFiles(files) {
 // Add function to reset counter when starting new analysis
 function resetAnalysis() {
     const counter = document.querySelector('.critical-alerts-counter');
-    counter.textContent = '0';
-    counter.classList.add('hidden');
+    if (counter) {
+        counter.textContent = '0';
+        counter.classList.add('hidden');
+    }
     // ... any other reset logic ...
 }
 
@@ -1244,122 +1337,222 @@ function extractTimestamp(line) {
     return null;
 }
 
-// Add event listeners for buttons
-document.getElementById('analyzeBtn').addEventListener('click', function() {
-    console.log("Analyze button clicked");
-    const fileInput = document.getElementById('logFile');
-    
-    if (fileInput.files.length === 0) {
-        alert("Please upload a log file to analyze.");
-        return;
-    }
-    
-    console.log("Files selected:", fileInput.files.length);
-    handleFiles(fileInput.files);
-});
+// Attach event listeners directly (no DOMContentLoaded needed if script is at end of body)
 
-document.getElementById('sampleBtn').addEventListener('click', function() {
-    console.log("Sample button clicked");
-    showLoading();
-    
-    // Create sample log entries
-    const sampleEvents = [
-        {
-            line: "Failed login attempt from 192.168.1.100 - possible brute force attack detected (5 attempts in 2 minutes)",
-            lineNumber: 135,
-            attackType: "bruteforce", 
-            severity: "critical",
-            timestamp: "2023-05-15 14:23:10"
-        },
-        {
-            line: "Connection flood detected from 203.0.113.15 - rate limit exceeded (1500 requests/sec)",
-            lineNumber: 267,
-            attackType: "ddos", 
-            severity: "critical",
-            timestamp: "2023-05-15 14:25:32"
-        },
-        {
-            line: "Suspicious process 'malware.exe' attempting to access system files at C:\\Windows\\System32",
-            lineNumber: 432,
-            attackType: "malware", 
-            severity: "high",
-            timestamp: "2023-05-15 14:30:15"
-        },
-        {
-            line: "SQL injection attempt detected in login form: ' OR 1=1 --",
-            lineNumber: 578,
-            attackType: "injection", 
-            severity: "critical",
-            timestamp: "2023-05-15 14:32:45"
-        },
-        {
-            line: "User 'guest' attempting to access admin panel without authorization",
-            lineNumber: 612,
-            attackType: "privEsc", 
-            severity: "high",
-            timestamp: "2023-05-15 14:36:22"
-        },
-        {
-            line: "Port scan detected from 203.0.113.28 - 50 ports scanned in 30 seconds",
-            lineNumber: 789,
-            attackType: "reconnaissance", 
-            severity: "medium",
-            timestamp: "2023-05-15 14:40:18"
+// Always enable and show the analyze button
+const analyzeBtn = document.getElementById('analyzeBtn');
+if (analyzeBtn) {
+    analyzeBtn.style.display = 'block';
+    analyzeBtn.disabled = false;
+}
+
+// Analyze Logs button
+const fileInput = document.getElementById('logFile');
+if (analyzeBtn && fileInput) {
+    analyzeBtn.addEventListener('click', function() {
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert("Please upload a log file to analyze.");
+            return;
         }
-    ];
-    
-    // Create recommendations
-    const recommendations = new Set([
-        "Implement account lockout policies and strong password requirements. Consider adding multi-factor authentication.",
-        "Deploy DDoS protection services and configure rate limiting on your servers. Monitor traffic patterns for anomalies.",
-        "Keep antivirus software updated, implement application whitelisting, and regularly scan for malware.",
-        "Use parameterized queries, input validation, and escape special characters. Keep web application frameworks updated.",
-        "Regularly audit user permissions, implement principle of least privilege, and monitor privileged account usage.",
-        "Implement network monitoring and intrusion detection systems. Monitor for unusual network activity."
-    ]);
-    
-    // Reset stats
-    resetStats();
-    
-    // Update stats based on sample events
-    stats.totalEvents = sampleEvents.length;
-    stats.criticalEvents = sampleEvents.filter(event => event.severity === 'critical').length;
-    stats.warningEvents = sampleEvents.filter(event => event.severity === 'high').length;
-    
-    // Update attack type stats
-    sampleEvents.forEach(event => {
-        stats.attackTypes[event.attackType] = (stats.attackTypes[event.attackType] || 0) + 1;
-        stats.severityLevels[event.severity]++;
-        
-        const timeKey = event.timestamp.split(' ')[0];
-        stats.timeline[timeKey] = (stats.timeline[timeKey] || 0) + 1;
-        
-        // Extract IP addresses for source stats
-        const ipMatch = event.line.match(/\d+\.\d+\.\d+\.\d+/);
-        if (ipMatch) {
-            stats.sources[ipMatch[0]] = (stats.sources[ipMatch[0]] || 0) + 1;
+        resetAnalysis();
+        showLoading();
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const content = e.target.result;
+                const fileExt = file.name.split('.').pop().toLowerCase();
+                const parser = FILE_HANDLERS[fileExt] || parseTextLog;
+                const logEntries = parser(content);
+                const results = analyzeLogs(logEntries);
+                updateUI(results);
+                const resultsSection = document.getElementById('results');
+                resultsSection.classList.remove('hidden');
+                setTimeout(scrollToResults, 100);
+            } catch (error) {
+                console.error('Error analyzing file:', error);
+                alert('Error analyzing file. Please check the console for details.');
+            } finally {
+                hideLoading();
+            }
+        };
+        reader.onerror = function() {
+            console.error('Error reading file');
+            alert('Error reading file. Please try again.');
+            hideLoading();
+        };
+        if (file.name.endsWith('.bin')) {
+            reader.readAsArrayBuffer(file);
+        } else {
+            reader.readAsText(file);
         }
     });
-    
-    // Build results object
-    const results = {
-        events: sampleEvents,
-        recommendations: recommendations
-    };
-    
-    // Show results
-    const resultsSection = document.getElementById('results');
-    resultsSection.classList.remove('hidden');
-    
-    updateUI(results);
-    
-    // Update mascot counter
-    const counter = document.querySelector('.critical-alerts-counter');
-    counter.textContent = stats.criticalEvents;
-    counter.classList.remove('hidden');
-    
-    hideLoading();
-    
-    // Scroll to results with a small delay to ensure UI is updated
-    setTimeout(scrollToResults, 100);
-});
+} else {
+    console.error('Analyze button or file input not found in DOM');
+}
+
+// Try Sample Logs button
+const sampleBtn = document.getElementById('sampleBtn');
+if (sampleBtn) {
+    sampleBtn.addEventListener('click', function() {
+        resetAnalysis();
+        showLoading();
+        // Sample log data
+        const sampleLog = `2024-06-01 12:01:23 INFO User admin failed login attempt from 192.168.1.10\n2024-06-01 12:01:25 WARNING Authentication failure for user root from 192.168.1.11\n2024-06-01 12:02:10 ERROR SQL Injection attempt detected: ' OR 1=1 -- from 203.0.113.5\n2024-06-01 12:03:45 INFO Connection flood detected from 198.51.100.23\n2024-06-01 12:04:12 ALERT XSS attempt: <script>alert('x')</script> from 203.0.113.8\n2024-06-01 12:05:00 WARNING Multiple login failures for user guest from 192.168.1.12\n2024-06-01 12:06:30 INFO User admin successful login from 192.168.1.10\n2024-06-01 12:07:15 ERROR Data breach: sensitive data exposure from 203.0.113.9\n2024-06-01 12:08:00 WARNING Brute force attempt detected from 192.168.1.13\n2024-06-01 12:09:30 INFO Port scan detected from 198.51.100.24\n2024-06-01 12:10:00 ERROR Ransomware detected on host 192.168.1.14\n2024-06-01 12:11:00 WARNING Cryptocurrency mining activity detected from 192.168.1.15\n2024-06-01 12:12:00 INFO User admin privilege escalation attempt from 192.168.1.16\n2024-06-01 12:13:00 ERROR Zero-day exploit detected from 203.0.113.10\n2024-06-01 12:14:00 WARNING Phishing attempt: suspicious email to user@example.com from 203.0.113.11\n2024-06-01 12:15:00 INFO Network scan detected from 198.51.100.25`;
+        try {
+            const logEntries = parseTextLog(sampleLog);
+            const results = analyzeLogs(logEntries);
+            updateUI(results);
+            const resultsSection = document.getElementById('results');
+            resultsSection.classList.remove('hidden');
+            setTimeout(scrollToResults, 100);
+        } catch (error) {
+            console.error('Error analyzing sample log:', error);
+            alert('Error analyzing sample log. Please check the console for details.');
+        } finally {
+            hideLoading();
+        }
+    });
+} else {
+    console.error('Sample log button not found in DOM');
+}
+
+// Scan Ports button
+const scanButton = document.getElementById('scanButton');
+if (scanButton) {
+    scanButton.addEventListener('click', () => {
+        const host = document.getElementById('hostInput').value.trim();
+        if (!host) {
+            alert('Please enter a host to scan');
+            return;
+        }
+        portScanner.scanHost(host);
+    });
+} else {
+    console.error('Scan button not found in DOM');
+}
+
+/**
+ * Web Port Scanner functionality
+ */
+class PortScanner {
+    constructor() {
+        this.scanResults = [];
+        this.isScanning = false;
+        this.commonPorts = {
+            20: 'FTP Data',
+            21: 'FTP Control',
+            22: 'SSH',
+            23: 'Telnet',
+            25: 'SMTP',
+            53: 'DNS',
+            80: 'HTTP',
+            110: 'POP3',
+            143: 'IMAP',
+            443: 'HTTPS',
+            3306: 'MySQL',
+            3389: 'RDP',
+            5432: 'PostgreSQL',
+            8080: 'HTTP Proxy'
+        };
+    }
+
+    async scanPort(host, port) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            const timeout = setTimeout(() => {
+                img.src = '';
+                resolve({ port, status: 'closed', service: this.commonPorts[port] || 'Unknown' });
+            }, 1000);
+
+            img.onload = () => {
+                clearTimeout(timeout);
+                resolve({ port, status: 'open', service: this.commonPorts[port] || 'Unknown' });
+            };
+
+            img.onerror = () => {
+                clearTimeout(timeout);
+                resolve({ port, status: 'closed', service: this.commonPorts[port] || 'Unknown' });
+            };
+
+            // Try to load an image from the port
+            img.src = `http://${host}:${port}/favicon.ico`;
+        });
+    }
+
+    async scanHost(host, ports = Object.keys(this.commonPorts)) {
+        if (this.isScanning) return;
+        this.isScanning = true;
+        this.scanResults = [];
+
+        const resultsContainer = document.getElementById('scanResults');
+        resultsContainer.innerHTML = '<div class="scanning">Scanning ports...</div>';
+
+        try {
+            // Convert ports to numbers and sort them
+            const portNumbers = ports.map(Number).sort((a, b) => a - b);
+            
+            // Scan ports in parallel with a limit of 5 concurrent scans
+            const batchSize = 5;
+            for (let i = 0; i < portNumbers.length; i += batchSize) {
+                const batch = portNumbers.slice(i, i + batchSize);
+                const batchResults = await Promise.all(
+                    batch.map(port => this.scanPort(host, port))
+                );
+                
+                this.scanResults.push(...batchResults.filter(result => result.status === 'open'));
+                
+                // Update UI with intermediate results
+                this.displayResults();
+                
+                // Add a small delay between batches to avoid overwhelming the server
+                if (i + batchSize < portNumbers.length) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+        } catch (error) {
+            console.error('Scan error:', error);
+            resultsContainer.innerHTML = '<div class="error">Error scanning ports. Please try again.</div>';
+        } finally {
+            this.isScanning = false;
+        }
+    }
+
+    displayResults() {
+        const resultsContainer = document.getElementById('scanResults');
+        
+        if (this.scanResults.length === 0) {
+            resultsContainer.innerHTML = '<div class="no-results">No open ports found.</div>';
+            return;
+        }
+
+        const resultsHTML = `
+            <div class="scan-results">
+                <h3>Open Ports</h3>
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Port</th>
+                            <th>Service</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${this.scanResults.map(result => `
+                            <tr>
+                                <td>${result.port}</td>
+                                <td>${result.service}</td>
+                                <td><span class="status open">Open</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        resultsContainer.innerHTML = resultsHTML;
+    }
+}
+
+// Initialize port scanner
+const portScanner = new PortScanner();

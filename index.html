@@ -3,131 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Security Log Analyzer Dashboard</title>
+    <title>Security Log Analyzer</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="dashboard">
-        <div class="loading-overlay">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">Analyzing Log Files...</div>
-        </div>
-        <header class="header">
-            <div class="header-content">
-                <h1><i class="fas fa-shield-alt"></i> Security Log Analyzer</h1>
-                <div class="header-stats">
-                    <div class="stat-item">
-                        <span id="totalEvents">0</span>
-                        <label>Total Events</label>
-                    </div>
-                    <div class="stat-item critical">
-                        <span id="criticalEvents">0</span>
-                        <label>Critical</label>
-                    </div>
-                    <div class="stat-item warning">
-                        <span id="warningEvents">0</span>
-                        <label>Warnings</label>
-                    </div>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                Security Log Analyzer
+            </div>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Total Events</h3>
+                    <div class="value" id="totalEvents">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Critical</h3>
+                    <div class="value" id="criticalEvents">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Warnings</h3>
+                    <div class="value" id="warningEvents">0</div>
                 </div>
             </div>
-        </header>
-        
-        <main class="main">
-            <div class="grid-container">
-                <section class="upload-section">
-                    <h2><i class="fas fa-upload"></i> Upload Log Files</h2>
-                    <form id="logForm" class="upload-form">
-                        <div class="file-drop-zone" id="dropZone">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <p>Drag and drop log files here or</p>
-                            <label for="logFile" class="file-label">
-                                <span>Choose Files</span>
-                                <input type="file" id="logFile" accept=".txt,.log,.csv,.json,.evtx,.syslog,.bin" multiple required>
-                            </label>
-                        </div>
-                        <div class="button-group">
-                            <button type="button" id="analyzeBtn" class="analyze-button">
-                                <i class="fas fa-search"></i> Analyze Logs
-                            </button>
-                            <button type="button" id="sampleBtn" class="sample-button">
-                                <i class="fas fa-flask"></i> Try Sample Logs
-                            </button>
-                        </div>
-                    </form>
-                </section>
-
-                <section id="results" class="results hidden">
-                    <div class="results-header">
-                        <h2><i class="fas fa-chart-bar"></i> Analysis Results</h2>
-                        <div class="filter-controls">
-                            <select id="severityFilter" aria-label="Filter by severity level">
-                                <option value="all">All Severities</option>
-                                <option value="critical">Critical</option>
-                                <option value="high">High</option>
-                                <option value="medium">Medium</option>
-                                <option value="low">Low</option>
-                            </select>
-                            <select id="attackTypeFilter" aria-label="Filter by attack type">
-                                <option value="all">All Attack Types</option>
-                                <option value="bruteforce">Brute Force</option>
-                                <option value="ddos">DDoS</option>
-                                <option value="malware">Malware</option>
-                                <option value="injection">Injection</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="charts-container">
-                        <div class="chart-wrapper">
-                            <canvas id="attackChart"></canvas>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="severityChart"></canvas>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="timelineChart"></canvas>
-                        </div>
-                        <div class="chart-wrapper">
-                            <canvas id="sourceChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="analysis-details">
-                        <div class="real-time-feed">
-                            <h3><i class="fas fa-stream"></i> Security Events</h3>
-                            <div id="output" class="event-list"></div>
-                        </div>
-                        
-                        <div class="recommendations-container">
-                            <h3>Security Recommendations</h3>
-                            <div id="recommendations" class="recommendations-empty">
-                                No security concerns detected yet. Upload some logs and I'll analyze them for you! 🔍
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </main>
-
-        <footer class="footer">
-            <p>&copy; 2025 Security Log Analyzer Dashboard | <i class="fas fa-code"></i> with <i class="fas fa-heart"></i> for Security</p>
-        </footer>
-        
-        <!-- Theme Toggle Button -->
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme">
-            <i class="fas fa-moon"></i>
-        </button>
-
-        <!-- Add the security mascot cat -->
-        <div class="security-mascot" aria-label="Security Cat Mascot">
-            <img src="assets/cat.png" alt="Security cat mascot">
-            <div class="critical-alerts-counter hidden" aria-label="Critical alerts count">0</div>
+            <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
+    </header>
+
+    <main>
+        <section class="upload-section card">
+            <h2><i class="fas fa-upload"></i> Upload Log Files</h2>
+            <div class="drop-zone" id="dropZone">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Drag and drop log files here or</p>
+                <div class="file-input-wrapper">
+                    <label for="logFile" class="file-input-label">Choose Files</label>
+                    <input type="file" id="logFile" class="file-input" multiple>
+                </div>
+                <div class="button-group">
+                    <button id="analyzeBtn" class="analyze-button"><i class="fas fa-search"></i> Analyze Logs</button>
+                    <button id="sampleBtn" class="sample-button"><i class="fas fa-flask"></i> Try Sample Logs</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="port-scanner-section card">
+            <h2><i class="fas fa-network-wired"></i> Port Scanner</h2>
+            <div class="scanner-controls">
+                <input type="text" id="hostInput" placeholder="Enter host (e.g., example.com)" class="host-input">
+                <button id="scanButton" class="scan-button">
+                    <i class="fas fa-search"></i> Scan Ports
+                </button>
+            </div>
+            <div id="scanResults" class="scan-results-container"></div>
+        </section>
+
+        <section class="results-section card" id="results">
+            <h2><i class="fas fa-chart-bar"></i> Analysis Results</h2>
+            <div class="filter-controls">
+                <select id="severityFilter">
+                    <option value="all">All Severities</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+                <select id="attackTypeFilter">
+                    <option value="all">All Attack Types</option>
+                </select>
+            </div>
+            <div id="output"></div>
+            <div id="recommendations"></div>
+            <div class="charts-section">
+                <div class="chart-container"><canvas id="attackChart"></canvas></div>
+                <div class="chart-container"><canvas id="severityChart"></canvas></div>
+                <div class="chart-container"><canvas id="timelineChart"></canvas></div>
+                <div class="chart-container"><canvas id="sourceChart"></canvas></div>
+            </div>
+        </section>
+    </main>
+
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
